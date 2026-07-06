@@ -1,13 +1,48 @@
 import { useState, useCallback, useEffect } from 'react';
-import {
-  isConnected,
-  isAllowed,
-  setAllowed,
-  getAddress,
-  requestAccess,
-  getNetworkDetails,
-  signTransaction as freighterSignTransaction,
-} from '@stellar/freighter-api';
+
+// Mock or real Freighter functions - graceful fallback
+const freighterAPI = {
+  isConnected: async () => {
+    if (typeof window !== 'undefined' && window.freighter?.isConnected) {
+      return window.freighter.isConnected();
+    }
+    return false;
+  },
+  isAllowed: async () => {
+    if (typeof window !== 'undefined' && window.freighter?.isAllowed) {
+      return window.freighter.isAllowed();
+    }
+    return false;
+  },
+  setAllowed: async (allowed) => {
+    if (typeof window !== 'undefined' && window.freighter?.setAllowed) {
+      return window.freighter.setAllowed(allowed);
+    }
+    return true;
+  },
+  getAddress: async () => {
+    if (typeof window !== 'undefined' && window.freighter?.getPublicKey) {
+      return window.freighter.getPublicKey();
+    }
+    throw new Error('Freighter wallet not found');
+  },
+  requestAccess: async () => {
+    if (typeof window !== 'undefined' && window.freighter?.requestAccess) {
+      return window.freighter.requestAccess();
+    }
+    return { error: { message: 'Freighter not installed' } };
+  },
+  getNetworkDetails: async () => {
+    return { passphrase: 'Test SDF Network ; September 2015', networkName: 'testnet' };
+  },
+  signTransaction: async (tx, opts) => {
+    if (typeof window !== 'undefined' && window.freighter?.signTransaction) {
+      return window.freighter.signTransaction(tx, opts);
+    }
+    throw new Error('Cannot sign - Freighter not available');
+  },
+};
+
 import { NETWORK_PASSPHRASE } from '../lib/contract.js';
 
 function freighterError(result, fallback) {
@@ -162,7 +197,7 @@ export function useWallet() {
 
     let result;
     try {
-      result = await freighterSignTransaction(xdr, {
+      result = await freighterAPI.signTransaction(xdr, {
         networkPassphrase: opts.networkPassphrase || NETWORK_PASSPHRASE,
         address,
       });

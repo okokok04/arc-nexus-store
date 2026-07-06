@@ -1,12 +1,15 @@
-# Dependencies
+# Node
 node_modules/
 dist/
-.vite/
+.pnp
+.pnp.js
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
 
-# Rust
-target/
-**/*.rs.bk
-contracts/restaurant/test_snapshots/
+# Vite
+.vite/
 
 # Environment
 .env
@@ -18,6 +21,31 @@ contracts/restaurant/test_snapshots/
 .idea/
 *.swp
 *.swo
+*~
+.DS_Store
+*.iml
+
+# Build outputs
+*.wasm
+target/
+*.o
+*.a
+*.so
+
+# Testing
+coverage/
+.nyc_output/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
 
 # OS
 .DS_Store

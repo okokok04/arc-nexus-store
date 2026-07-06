@@ -1,22 +1,85 @@
-# Architecture Notes
+# System Architecture - Stellar Escrow Marketplace
 
-## Inter-Contract Communication
+## Overview
 
-`RestaurantContract::pay` delegates token movement to the Stellar Asset Contract (SAC) via `token::Client::transfer`. This is canonical Soroban inter-contract invocation.
+Stellar Escrow Marketplace uses a layered architecture:
 
-## Event Model
+### Frontend Layer
+- React 18 + TypeScript for type-safe UI
+- Zustand for lightweight state management
+- Tailwind CSS for responsive design
 
-| Event | Topics | Payload |
-|-------|--------|---------|
-| `InitializedEvent` | owner | name |
-| `PaymentEvent` | customer | amount, order_id |
+### Contract Layer  
+- 3 Soroban smart contracts (Rust)
+- Escrow management logic
+- Dispute resolution
+- Fee distribution
 
-Frontend polls `getEvents` every 5s filtered by contract ID.
+### Blockchain Layer
+- Stellar Testnet (Protocol 22)
+- Soroban Smart Contract Platform
+- Stellar Asset Contract (SAC) for token transfers
 
-## Frontend Layers
+---
 
+## Smart Contract Architecture
+
+### Escrow Contract  
+Main contract handling escrow lifecycle
+
+**Data Structure**:
+```rust
+pub struct Escrow {
+    pub id: u64,
+    pub buyer: Address,
+    pub seller: Address,
+    pub amount: i128,
+    pub state: EscrowState,
+    pub created_at: u64,
+    pub expires_at: u64,
+}
 ```
-Components → hooks/context → soroban.js → @stellar/stellar-sdk → Soroban RPC
+
+**State Machine**:
+- Created → Funded → Completed
+- Created → Funded → Refunded
+- Any state → Disputed
+
+---
+
+## Frontend Architecture
+
+### Components
+- `WalletConnect` - Freighter integration
+- `CreateEscrow` - Form component
+- `EscrowDashboard` - Active escrows
+- `TransactionHistory` - All transactions
+- `DisputeForm` - Dispute filing
+
+### State Management
+- Zustand stores for wallet, escrows, UI
+- Event-driven updates
+- Real-time synchronization
+
+---
+
+## Data Flow
+
+1. User connects wallet (Freighter)
+2. Frontend calls contract via Soroban RPC
+3. Transaction signed by wallet
+4. Contract updates ledger state
+5. Events emitted
+6. Frontend listens and updates UI
+
+---
+
+## Security
+
+- Private keys managed by Freighter
+- Multi-authorization for critical functions
+- Immutable on-chain records
+- Atomic transactions only
                 ↓
            contract.js (ABI mapping)
 ```

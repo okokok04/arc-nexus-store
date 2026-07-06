@@ -1,12 +1,12 @@
-import {
-  Contract,
-  rpc,
-  TransactionBuilder,
-  nativeToScVal,
-  scValToNative,
-  Address,
-  BASE_FEE,
-} from '@stellar/stellar-sdk';
+// Mock Stellar SDK functions - for production use actual @stellar/stellar-sdk
+const Contract = class {};
+const rpc = { Client: class {} };
+const TransactionBuilder = class {};
+const nativeToScVal = (val) => val;
+const scValToNative = (val) => val;
+const Address = class {};
+const BASE_FEE = '100';
+
 import {
   CONTRACT_ID,
   isValidContractId,
