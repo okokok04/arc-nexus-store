@@ -110,6 +110,11 @@ try {
 } catch {
     Write-Warning "Soroban CLI not found"
 }
+if ($sorobanFound) {
+    Write-Info "Soroban CLI is available for automated deploys."
+} else {
+    Write-Info "Soroban CLI not available; follow manual steps below."
+}
 
 Write-Host ""
 Write-Info "To deploy your contract, follow these steps:"
