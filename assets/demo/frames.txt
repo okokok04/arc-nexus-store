@@ -1,0 +1,4 @@
+file 'assets/demo/home.png'
+file 'assets/demo/create.png'
+file 'assets/demo/history.png'
+file 'assets/demo/escrow1.png'
