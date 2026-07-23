@@ -1,43 +1,39 @@
 {
-  "name": "stellar-escrow-marketplace",
+  "name": "arc-restaurant",
   "version": "1.0.0",
-  "description": "Production-ready Stellar Escrow Marketplace MVP",
+  "description": "Arc Nexus Store — Soroban-powered restaurant payments on Stellar",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "type-check": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx --fix",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "contract:build": "cd contracts/escrow && cargo build --target wasm32-unknown-unknown --release",
-    "contract:test": "cd contracts/escrow && cargo test",
+    "contract:build": "cd contracts/restaurant && cargo build --target wasm32-unknown-unknown --release",
+    "contract:test": "cd contracts/restaurant && cargo test",
     "contract:deploy": "node scripts/deploy-contract.mjs"
   },
   "keywords": [
     "stellar",
     "soroban",
-    "escrow",
-    "marketplace",
+    "restaurant",
+    "payments",
     "blockchain",
     "dapp"
   ],
   "author": "Your Team",
   "license": "MIT",
   "dependencies": {
+    "@stellar/freighter-api": "^4.1.0",
+    "@stellar/stellar-sdk": "^13.1.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.20.0",
-    "zustand": "^4.4.0"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
-    "@types/node": "^20.12.0",
-    "@types/react": "^18.3.0",
-    "@types/react-dom": "^18.3.0",
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
-    "@typescript-eslint/parser": "^7.8.0",
+    "@testing-library/jest-dom": "^6.4.0",
+    "@testing-library/react": "^15.0.0",
     "@vitejs/plugin-react": "^4.3.0",
     "@vitest/ui": "^1.6.0",
     "autoprefixer": "^10.4.19",
@@ -46,11 +42,11 @@
     "eslint-plugin-prettier": "^5.1.0",
     "eslint-plugin-react": "^7.34.0",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "jsdom": "^24.0.0",
     "playwright": "^1.61.1",
     "postcss": "^8.4.38",
     "prettier": "^3.3.0",
     "tailwindcss": "^3.4.3",
-    "typescript": "^5.4.0",
     "vite": "^5.2.0",
     "vitest": "^1.6.0"
   }
