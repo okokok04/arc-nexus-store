@@ -1,34 +1,40 @@
-# � Stellar Escrow Marketplace
+# Arc Nexus Store
 
-[![CI/CD Pipeline](https://github.com/your-username/stellar-escrow-marketplace/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/stellar-escrow-marketplace/actions/workflows/ci.yml)
+[![CI/CD Pipeline](https://github.com/okokok04/arc-restaurant/actions/workflows/ci.yml/badge.svg)](https://github.com/okokok04/arc-restaurant/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Stellar](https://img.shields.io/badge/Built%20on-Stellar-blue)](https://stellar.org)
 [![Soroban](https://img.shields.io/badge/Smart%20Contracts-Soroban-orange)](https://soroban.stellar.org)
 
-**Stellar Escrow Marketplace** is a **production-ready, decentralized escrow platform** built on Stellar Soroban, enabling secure peer-to-peer transactions, freelancer payments, and digital asset trading with **zero intermediaries**.
+**Arc Nexus Store** is a Soroban-powered restaurant/store payment dApp on Stellar. Customers connect a Freighter wallet, the owner initializes the store on-chain, and every purchase calls the deployed smart contract directly — no backend, no custodian.
 
-## 🚀 Live Demo
+## Live Demo
 
-- **Frontend**: [stellar-escrow.xyz](https://stellar-escrow.xyz) (Coming soon)
-- **Demo Video**: [YouTube](https://youtube.com/watch?v=...) (Coming soon)
-- **Contract Address (Testnet)**: `[To be deployed]`
+- **Frontend**: [arc-nexus-tech.vercel.app](https://arc-nexus-tech.vercel.app/)
+- **Contract (Testnet)**: `CALNBNJF7HWOU2T4H33JSOWOZX57NPAHEVENJKDFEWE7363PKF62HCAI`
+- **Demo video**: _pending_
 
----
+## Key Features
 
-## 🎯 Key Features
+- **Wallet integration** — Freighter connect/disconnect via `@stellar/freighter-api`, with network/account checks before every signature
+- **Real on-chain calls** — `init` and `pay` are built, simulated, signed, and submitted through `@stellar/stellar-sdk` (`Contract`, `TransactionBuilder`, `rpc.Server`), not mocked
+- **Testnet auto-funding** — one-click Friendbot funding with a fallback link to Stellar Laboratory
+- **Live event stream** — polls Soroban RPC `getEvents` for `init`/`pay` contract events in real time
+- **Monitoring** — Sentry error tracking and GA4 analytics, wired in `src/lib/monitoring.js` (enabled once DSN/measurement ID are configured)
+- **Feedback link** — footer link to a feedback form/mailto, configurable via `VITE_FEEDBACK_URL`
+- **Mobile responsive UI** — single-column layout, stacked forms/actions below 640px
 
-✅ **Wallet Integration** - Freighter wallet seamless connection  
-✅ **Create Escrow** - Secure escrow agreement with validation  
-✅ **Deposit Funds** - Multi-asset support (XLM, USDC, etc.)  
-✅ **Release Payment** - Automatic payment on delivery confirmation  
-✅ **Refund Functionality** - Safe refund mechanism with conditions  
-✅ **Dispute Management** - File and resolve disputes with evidence  
-✅ **Transaction History** - Complete audit trail with real-time updates  
-✅ **Mobile Responsive** - Works on all devices  
-✅ **Event Streaming** - Real-time payment status updates  
-✅ **Production Ready** - Monitoring, analytics, error handling
+## Smart Contract
 
-## 🧪 Kết quả Kiểm thử (Test Output)
+`contracts/restaurant` — a Soroban contract (`soroban-sdk` 22) exposing:
+
+| Function | Description |
+|---|---|
+| `init(owner, name)` | One-time store initialization |
+| `pay(customer, token, amount, order_id)` | Transfers `amount` of `token` from customer to owner, updates revenue/order count |
+| `get_owner`, `get_name`, `get_balance`, `get_order_count` | Read-only views |
+
+### Test output
+
 ```text
 running 4 tests
 test test::test_init_sets_owner_and_name ... ok
@@ -39,18 +45,50 @@ test test::test_pay_transfers_tokens_and_updates_balance ... ok
 test result: ok. 4 passed; 0 failed; 0 ignored; finished in 0.03s
 ```
 
----
+## Getting Started
 
-## ✅ Submission Checklist Tracking
-- [x] **README with complete documentation**
-- [x] **Minimum 10+ meaningful commits**
-- [x] **Live demo link**: [https://arc-nexus-tech.vercel.app/](https://arc-nexus-tech.vercel.app/)
-- [x] **Contract deployment address**: `CALNBNJF7HWOU2T4H33JSOWOZX57NPAHEVENJKDFEWE7363PKF62HCAI`
-- [x] **Test output with 3+ passing tests** (4/4 Passed)
-- [x] **CI/CD pipeline configuration** (GitHub Actions ready)
-- [x] **Mobile responsive UI** (Optimized via CSS Grid/Flexbox)
-- [x] **Public GitHub repository**: [https://github.com/okokok04/arc-restaurant](https://github.com/okokok04/arc-restaurant)
-- [ ] **Demo video link** (User to record 1-2 mins and add link here)
+```bash
+npm install
+cp .env.example .env   # fill in VITE_CONTRACT_ID at minimum
+npm run dev
+```
 
----
-*Built with ❤️ for the Stellar community.*
+Build the contract and run its Rust test suite:
+
+```bash
+npm run contract:build
+npm run contract:test
+```
+
+Deploy to testnet (requires a funded deployer key — see `scripts/deploy-contract.mjs`):
+
+```bash
+npm run contract:deploy
+```
+
+## Tech Stack
+
+- **Frontend**: React 18, Vite, Tailwind CSS
+- **Stellar**: `@stellar/stellar-sdk`, `@stellar/freighter-api`, Soroban RPC
+- **Contract**: Rust, `soroban-sdk` 22
+- **CI/CD**: GitHub Actions (`ci.yml` lint/test/build, `deploy-contract.yml` testnet deploy)
+
+## Project Structure
+
+```
+src/
+  components/   RestaurantPanel, WalletConnect, EventStream, PurchaseConfirmModal, FeedbackLink
+  context/      WalletContext (Freighter wallet state)
+  hooks/        useWallet, useEventStream
+  lib/          soroban.js (SDK calls), contract.js (contract config/menu), account.js (Friendbot/error mapping), monitoring.js
+contracts/
+  restaurant/   Soroban contract source + tests
+```
+
+## User Feedback & Onboarding
+
+The footer "Send feedback" link routes to `VITE_FEEDBACK_URL` (a form or mailto). Real testnet user activity and feedback should be logged here as it comes in — this section intentionally starts empty rather than listing simulated data.
+
+## License
+
+MIT

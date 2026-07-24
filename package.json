@@ -25,6 +25,7 @@
   "author": "Your Team",
   "license": "MIT",
   "dependencies": {
+    "@sentry/react": "^7.117.0",
     "@stellar/freighter-api": "^4.1.0",
     "@stellar/stellar-sdk": "^13.1.0",
     "react": "^18.2.0",

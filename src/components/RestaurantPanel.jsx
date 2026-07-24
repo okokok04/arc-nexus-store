@@ -20,6 +20,7 @@ import {
   DEFAULT_TOKEN,
   MENU_ITEMS,
 } from '../lib/contract.js';
+import { trackEvent, captureException } from '../lib/monitoring.js';
 import PurchaseConfirmModal from './PurchaseConfirmModal.jsx';
 
 export default function RestaurantPanel() {
@@ -146,12 +147,14 @@ export default function RestaurantPanel() {
       const result = await initRestaurant(publicKey, restaurantName, publicKey, signTransaction);
       setLastTxHash(result.hash);
       setMessage(`Restaurant initialized! Tx: ${result.hash.slice(0, 16)}…`);
+      trackEvent('restaurant_init', { tx_hash: result.hash });
       await refreshStats();
       scrollToPurchaseStatus();
     } catch (err) {
       const { message: msg, needsFunding: nf } = formatStellarError(err);
       setError(msg);
       setNeedsFunding(nf);
+      captureException(err, { action: 'init' });
       scrollToPurchaseStatus();
     } finally {
       setLoading(false);
@@ -228,6 +231,7 @@ export default function RestaurantPanel() {
       setPayPhase('confirm');
       setLastTxHash(result.hash);
       setMessage(`Paid for ${item.name}! Tx: ${result.hash.slice(0, 16)}…`);
+      trackEvent('purchase', { item_id: item.id, item_name: item.name, value: item.price / 1_000_000, tx_hash: result.hash });
       await refreshStats();
     } catch (err) {
       console.error('Payment error:', err);
@@ -237,6 +241,7 @@ export default function RestaurantPanel() {
       setError(display);
       setNeedsFunding(nf);
       setPayPhase('confirm');
+      captureException(err, { action: 'pay', itemId: item.id });
     } finally {
       setLoading(false);
       setAction(null);

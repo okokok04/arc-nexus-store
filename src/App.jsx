@@ -3,6 +3,8 @@ import { WalletProvider } from './context/WalletContext.jsx';
 import WalletConnect from './components/WalletConnect.jsx';
 import RestaurantPanel from './components/RestaurantPanel.jsx';
 import EventStream from './components/EventStream.jsx';
+import FeedbackLink from './components/FeedbackLink.jsx';
+import { captureException } from './lib/monitoring.js';
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -13,7 +15,7 @@ class ErrorBoundary extends Component {
     return { hasError: true, error };
   }
   componentDidCatch(error, errorInfo) {
-    console.error("App Crash:", error, errorInfo);
+    captureException(error, { componentStack: errorInfo?.componentStack });
   }
   render() {
     if (this.state.hasError) {
@@ -45,6 +47,7 @@ export default function App() {
           </main>
           <footer className="footer">
             <WalletConnect />
+            <FeedbackLink />
           </footer>
         </div>
       </WalletProvider>

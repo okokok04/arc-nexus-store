@@ -9,6 +9,7 @@ import {
   signTransaction as freighterSignTransaction,
 } from '@stellar/freighter-api';
 import { NETWORK_PASSPHRASE } from '../lib/contract.js';
+import { trackEvent } from '../lib/monitoring.js';
 
 function freighterError(result, fallback) {
   if (result?.error) {
@@ -101,6 +102,7 @@ export function useWallet() {
       }
 
       setPublicKey(address);
+      trackEvent('wallet_connect');
       return address;
     } catch (err) {
       const msg = err?.message || 'Failed to connect wallet';
