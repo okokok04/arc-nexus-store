@@ -1,6 +1,6 @@
 # Arc Nexus Store
 
-[![CI/CD Pipeline](https://github.com/okokok04/arc-restaurant/actions/workflows/ci.yml/badge.svg)](https://github.com/okokok04/arc-restaurant/actions/workflows/ci.yml)
+[![CI/CD Pipeline](https://github.com/okokok04/arc-nexus-store/actions/workflows/ci.yml/badge.svg)](https://github.com/okokok04/arc-nexus-store/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Stellar](https://img.shields.io/badge/Built%20on-Stellar-blue)](https://stellar.org)
 [![Soroban](https://img.shields.io/badge/Smart%20Contracts-Soroban-orange)](https://soroban.stellar.org)
@@ -9,7 +9,7 @@
 
 ## Live Demo
 
-- **Frontend**: [arc-nexus-tech.vercel.app](https://arc-nexus-tech.vercel.app/)
+- **Frontend**: _pending — confirm the real domain under the `arc-restaurant-git` Vercel project (Settings → Domains) and drop it in here_
 - **Contract (Testnet)**: `CALNBNJF7HWOU2T4H33JSOWOZX57NPAHEVENJKDFEWE7363PKF62HCAI`
 - **Demo video**: _pending_
 
