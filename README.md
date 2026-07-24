@@ -9,7 +9,7 @@
 
 ## Live Demo
 
-- **Frontend**: _pending — confirm the real domain under the `arc-restaurant-git` Vercel project (Settings → Domains) and drop it in here_
+- **Frontend**: [arc-restaurant-git.vercel.app](https://arc-restaurant-git.vercel.app/)
 - **Contract (Testnet)**: `CALNBNJF7HWOU2T4H33JSOWOZX57NPAHEVENJKDFEWE7363PKF62HCAI`
 - **Demo video**: _pending_
 
