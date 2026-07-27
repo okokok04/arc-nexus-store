@@ -9,7 +9,7 @@ on:
 env:
   CARGO_TERM_COLOR: always
   NODE_VERSION: '20'
-  RUST_VERSION: '1.75'
+  RUST_VERSION: 'stable'
 
 jobs:
   lint:
@@ -39,7 +39,7 @@ jobs:
         with:
           profile: minimal
           toolchain: ${{ env.RUST_VERSION }}
-          target: wasm32-unknown-unknown
+          target: wasm32v1-none
           override: true
 
       - name: Cache Rust build

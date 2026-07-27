@@ -54,6 +54,7 @@ Thumbs.db
 # Soroban
 .soroban/
 *.wasm
+test_snapshots/
 
 # Logs
 *.log

@@ -10,7 +10,7 @@
     "lint": "eslint . --ext .js,.jsx --fix",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "contract:build": "cd contracts/restaurant && cargo build --target wasm32-unknown-unknown --release",
+    "contract:build": "cd contracts/restaurant && cargo build --target wasm32v1-none --release",
     "contract:test": "cd contracts/restaurant && cargo test",
     "contract:deploy": "node scripts/deploy-contract.mjs"
   },
