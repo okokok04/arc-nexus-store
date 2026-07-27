@@ -10,7 +10,7 @@
 ## Live Demo
 
 - **Frontend**: [arc-restaurant-git.vercel.app](https://arc-restaurant-git.vercel.app/)
-- **Contract (Testnet)**: `CALNBNJF7HWOU2T4H33JSOWOZX57NPAHEVENJKDFEWE7363PKF62HCAI`
+- **Contract (Testnet)**: `CCG66EK4ZNG4LPB565VWSUEFDXCZM5RRUONQF4YEUQ5U2V5CL6WE2MU7`
 - **Demo video**: _pending_
 
 ## Screenshots
