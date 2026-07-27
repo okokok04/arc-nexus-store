@@ -1,17 +1,16 @@
-# Screenshots for Submission
+# Screenshots
 
-Place the following screenshots in this folder before submitting:
+- `desktop-ui.png` — Nexus Store dashboard at 1280×800, captured from the running app (`npm run dev` + Playwright, `scripts/capture_screenshots.mjs`)
+- `mobile-ui.png` — same app at a 375px mobile viewport, showing the stacked responsive layout
 
-1. `mobile-ui.png` — responsive layout at 375px width
-2. `ci-pipeline.png` — GitHub Actions green checkmarks
-3. `test-output.png` — terminal showing 3+ passing tests
+Still needed for submission:
+- Sentry dashboard screenshot (once `VITE_SENTRY_DSN` is set on Vercel and a real error has been captured)
+- GA4 realtime/events dashboard screenshot (once `VITE_GA_MEASUREMENT_ID` is set on Vercel and a real session has been tracked)
 
-Generate locally:
+Regenerate the desktop/mobile screenshots:
 
 ```bash
-# Tests
-cd frontend && npm test
-
-# Dev server (resize browser to mobile)
-cd frontend && npm run dev
+npm install
+npm run dev &          # or: npx vite
+node scripts/capture_screenshots.mjs
 ```

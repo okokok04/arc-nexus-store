@@ -13,6 +13,12 @@
 - **Contract (Testnet)**: `CALNBNJF7HWOU2T4H33JSOWOZX57NPAHEVENJKDFEWE7363PKF62HCAI`
 - **Demo video**: _pending_
 
+## Screenshots
+
+| Desktop | Mobile (375px) |
+|---|---|
+| ![Desktop UI](docs/screenshots/desktop-ui.png) | ![Mobile UI](docs/screenshots/mobile-ui.png) |
+
 ## Key Features
 
 - **Wallet integration** — Freighter connect/disconnect via `@stellar/freighter-api`, with network/account checks before every signature
