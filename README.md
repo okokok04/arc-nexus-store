@@ -99,7 +99,7 @@ contracts/
 
 The footer "Send feedback" link routes to `VITE_FEEDBACK_URL` (a form or mailto).
 
-Full tracking sheet: [docs/USER_RECRUITMENT.md](docs/USER_RECRUITMENT.md).
+Full tracking sheet + engineering feedback (contract auth finding, mobile-Safari limitation, etc.): [docs/USER_RECRUITMENT.md](docs/USER_RECRUITMENT.md).
 
 - **1 real human tester** so far (the developer's own first test) — real tx hash on stellar.expert.
 - **9 automated smoke-test wallets** (`scripts/generate_test_transactions.mjs`) — real, distinct testnet wallets each submitting a real signed `pay()` transaction, used to verify the contract/frontend handle concurrent distinct wallets correctly. These are explicitly **not** real human testers and don't count toward the 10-real-user-onboarding target.
