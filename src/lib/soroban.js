@@ -37,23 +37,17 @@ function getContract() {
 
 /**
  * Simulate a read-only contract call (no wallet signature required).
+ * Requires a funded `sourceKey` — the current Soroban RPC's simulation
+ * response includes account-state fields that only decode cleanly for a
+ * source account that actually exists on the ledger (an unfunded/placeholder
+ * source reliably triggers a "Bad union switch" XDR parse error).
  */
-export async function simulateContractCall(functionName, args = []) {
-  const DUMMY_KEY = 'GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF';
-
-  let acct;
-  try {
-    acct = await server.getAccount(DUMMY_KEY);
-  } catch {
-    acct = {
-      accountId: () => DUMMY_KEY,
-      sequenceNumber: () => '0',
-      incrementSequenceNumber: () => {},
-      sequence: '0',
-      account_id: DUMMY_KEY,
-    };
+export async function simulateContractCall(functionName, args = [], sourceKey) {
+  if (!sourceKey) {
+    throw new Error('simulateContractCall requires a funded sourceKey');
   }
 
+  const acct = await server.getAccount(sourceKey);
   const contract = getContract();
   const scArgs = args.map(scValFromSpec);
 
@@ -223,10 +217,15 @@ export async function payOrder(customer, tokenAddress, amount, orderId, publicKe
   );
 }
 
-/** Read contract balance via simulation */
-export async function getContractBalance() {
+/**
+ * Read contract balance via simulation. Requires a connected, funded wallet
+ * as the simulation source — returns null (not 0) when no wallet is
+ * connected yet, so the UI can tell "unknown" apart from "actually zero".
+ */
+export async function getContractBalance(sourceKey) {
+  if (!sourceKey) return null;
   try {
-    const sim = await simulateContractCall(CONTRACT_FUNCTIONS.GET_BALANCE, []);
+    const sim = await simulateContractCall(CONTRACT_FUNCTIONS.GET_BALANCE, [], sourceKey);
     if (sim.result?.retval) {
       return Number(scValToNative(sim.result.retval));
     }
@@ -237,10 +236,11 @@ export async function getContractBalance() {
   return 0;
 }
 
-/** Read order count via simulation */
-export async function getOrderCount() {
+/** Read order count via simulation. Requires a connected, funded wallet. */
+export async function getOrderCount(sourceKey) {
+  if (!sourceKey) return null;
   try {
-    const sim = await simulateContractCall(CONTRACT_FUNCTIONS.GET_ORDER_COUNT, []);
+    const sim = await simulateContractCall(CONTRACT_FUNCTIONS.GET_ORDER_COUNT, [], sourceKey);
     if (sim.result?.retval) {
       return Number(scValToNative(sim.result.retval));
     }

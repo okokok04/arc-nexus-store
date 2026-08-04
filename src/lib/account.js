@@ -82,6 +82,14 @@ export function formatStellarError(err) {
     return { message: msg.length > 200 ? `${msg.slice(0, 200)}…` : msg, needsFunding: false };
   }
 
+  if (/bad union switch/i.test(msg)) {
+    return {
+      message:
+        'Client-side response parsing hiccup — the transaction may have already gone through. Check your wallet address on stellar.expert before retrying to avoid a duplicate payment.',
+      needsFunding: false,
+    };
+  }
+
   return { message: msg, needsFunding: false };
 }
 

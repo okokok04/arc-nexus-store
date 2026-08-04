@@ -47,10 +47,11 @@ export default function RestaurantPanel() {
   }, []);
 
   const refreshStats = useCallback(async () => {
+    if (!publicKey) return;
     try {
-      const bal = await getContractBalance();
-      const count = await getOrderCount();
-      
+      const bal = await getContractBalance(publicKey);
+      const count = await getOrderCount(publicKey);
+
       // Only update if we get valid numbers back
       if (typeof bal === 'number') setBalance(bal);
       if (typeof count === 'number') setOrderCount(count);
@@ -58,7 +59,7 @@ export default function RestaurantPanel() {
       console.warn('Refresh stats failed:', err.message);
       // Keep existing stats, don't crash
     }
-  }, []);
+  }, [publicKey]);
 
   const checkFunding = useCallback(async () => {
     if (!publicKey) {
@@ -416,8 +417,8 @@ export default function RestaurantPanel() {
         </div>
 
         <div className="menu-grid">
-          {MENU_ITEMS.map((item) => (
-            <article key={item.id} className="menu-card">
+          {MENU_ITEMS.map((item, index) => (
+            <article key={item.id} className="menu-card" style={{ '--i': index }}>
               <span className="menu-emoji">{item.emoji}</span>
               <h4>{item.name}</h4>
               <p className="menu-price">{(item.price / 1_000_000).toFixed(2)} XLM</p>
