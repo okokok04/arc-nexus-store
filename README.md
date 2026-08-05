@@ -106,7 +106,7 @@ The footer "Send feedback" link routes to `VITE_FEEDBACK_URL` (a form or mailto)
 
 Current honest status:
 - **1 real human tester** (the developer's own first test) — real tx hash on stellar.expert
-- **9 automated smoke-test wallets** (`scripts/generate_test_transactions.mjs`) — real, distinct testnet wallets each submitting a real signed `pay()` transaction, used to verify the contract/frontend handle concurrent distinct wallets correctly. Explicitly **not** real human testers and don't count toward the 50-user target
+- **24 automated smoke-test wallets** across both contract deployments (`scripts/generate_test_transactions.mjs`) — real, distinct testnet wallets each submitting a real signed `pay()` transaction, used to verify the contract/frontend handle concurrent distinct wallets correctly (15 of those against the current, post-security-fix contract). Explicitly **not** real human testers and don't count toward the 50-user target
 - **No real external feedback collected yet** — the 50-tester recruitment push is in progress, tracked in the docs above
 
 ## Growth Strategy
