@@ -11,7 +11,8 @@
 
 - **Frontend**: [arc-restaurant-git.vercel.app](https://arc-restaurant-git.vercel.app/)
 - **Contract (Testnet)**: `CDRGTQ466OLVQDYDTZKXY4J5AWJOJSIJSN3U2CSWHYXD4L7JYU5VXY6N`
-- **Demo video**: _pending_
+- **Demo video**: _pending_ — script ready at [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md)
+- **Pitch deck**: [Arc Nexus Store — Pitch Deck](https://claude.ai/code/artifact/a777089c-395c-4a6d-90f7-0955b99001dc) (problem, solution, architecture, market, traction, growth, roadmap)
 
 ## Screenshots
 
@@ -95,15 +96,42 @@ contracts/
   restaurant/   Soroban contract source + tests
 ```
 
-## User Feedback & Onboarding
+## User Growth & Feedback (Level 5 — target: 50 real testers)
 
-The footer "Send feedback" link routes to `VITE_FEEDBACK_URL` (a form or mailto).
+The footer "Send feedback" link routes to `VITE_FEEDBACK_URL` (a form or mailto). For structured, at-scale feedback:
 
-Full tracking sheet + engineering feedback (contract auth finding, mobile-Safari limitation, etc.): [docs/USER_RECRUITMENT.md](docs/USER_RECRUITMENT.md).
+- **Tester form**: _pending_ — build steps and exact fields in [docs/USER_ONBOARDING_FORM.md](docs/USER_ONBOARDING_FORM.md) (wallet address, email, name, ease-of-use rating, free-text feedback)
+- **Response sheet (Excel export)**: _pending_ — becomes the live source of truth for the 50-user proof once the form is live; export/share steps are in the same doc
+- **Recruitment plan + ready-to-post messages**: [docs/USER_RECRUITMENT.md](docs/USER_RECRUITMENT.md)
 
-- **1 real human tester** so far (the developer's own first test) — real tx hash on stellar.expert.
-- **9 automated smoke-test wallets** (`scripts/generate_test_transactions.mjs`) — real, distinct testnet wallets each submitting a real signed `pay()` transaction, used to verify the contract/frontend handle concurrent distinct wallets correctly. These are explicitly **not** real human testers and don't count toward the 10-real-user-onboarding target.
-- **No real external feedback collected yet.** `docs/USER_RECRUITMENT.md` has ready-to-post recruitment messages and an empty row template — replace the automated rows with real testers as they're recruited.
+Current honest status:
+- **1 real human tester** (the developer's own first test) — real tx hash on stellar.expert
+- **9 automated smoke-test wallets** (`scripts/generate_test_transactions.mjs`) — real, distinct testnet wallets each submitting a real signed `pay()` transaction, used to verify the contract/frontend handle concurrent distinct wallets correctly. Explicitly **not** real human testers and don't count toward the 50-user target
+- **No real external feedback collected yet** — the 50-tester recruitment push is in progress, tracked in the docs above
+
+## Growth Strategy
+
+Recruit where wallet-holders already are (Stellar Developer Discord, r/stellar, X, personal network), route every channel to the same feedback form, batch outreach 2-3 channels/day so one wave's support questions get fixed before the next wave arrives. Full plan: [docs/USER_RECRUITMENT.md §2a](docs/USER_RECRUITMENT.md#2a-scaling-to-50-users-level-5).
+
+## Product Iteration Log
+
+Real engineering feedback from testing this app (see [docs/USER_RECRUITMENT.md §3b](docs/USER_RECRUITMENT.md#3b-engineering-feedback-from-testing-this-session--not-a-substitute-for-real-user-feedback)) turned directly into shipped fixes:
+
+| Feedback | Fix | Commit |
+|---|---|---|
+| `init()` had no `require_auth()` — anyone could claim ownership of a fresh, uninitialized contract (front-running risk) | Added `owner.require_auth()`, redeployed contract, verified all read functions | [`b2df24d`](https://github.com/okokok04/arc-nexus-store/commit/b2df24d) |
+| Real Sentry event showed a mobile Safari visitor hitting a generic "wallet not found" error — Freighter has no mobile app | Mobile browsers now get an honest, actionable message instead | [`b2df24d`](https://github.com/okokok04/arc-nexus-store/commit/b2df24d) |
+| Funding flow only became visible after connecting a wallet — first-time visitors didn't know what to expect | Added a 3-step onboarding hint (connect → fund → buy) visible before connecting | [`b2df24d`](https://github.com/okokok04/arc-nexus-store/commit/b2df24d) |
+| `simulateContractCall` used an unfunded placeholder account; current testnet RPC can't XDR-decode simulation responses for a source account that doesn't exist on-ledger — reliable "Bad union switch" errors | Root-caused to `@stellar/stellar-sdk` being 3 major versions behind (13.3.0 → 16.2.0); upgraded and verified end-to-end | [`45a80b5`](https://github.com/okokok04/arc-nexus-store/commit/45a80b5) |
+
+**Next iteration**: once the 50-tester form (above) has real responses, the top 2-3 recurring themes from the free-text feedback column become the next rows in this table — each one shipped as its own commit, linked here the same way. The current front-runner from the roadmap is a mobile-compatible signing path (WalletConnect or similar), since "desktop only" is the most consequential known gap.
+
+## Roadmap
+
+- **Shipped**: contract auth fix, mobile-visitor messaging, clearer onboarding, monitoring (Sentry + GA4) live with real captured data, CI/CD fully green, SDK upgrade fixing simulation reliability
+- **Now**: run the 50-tester recruitment push, collect structured feedback via the form above
+- **Next**: mobile wallet signing path (closes the most-cited gap), feedback-driven UX pass
+- **Later**: security audit + mainnet deployment, pilot with one real merchant taking real payments
 
 ## License
 

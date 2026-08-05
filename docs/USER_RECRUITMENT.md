@@ -24,7 +24,7 @@ Once both are confirmed live, take a screenshot of each dashboard and add them t
 
 ## 2. User Recruitment Plan
 
-Target: 10+ real people who connect a Freighter wallet and complete at least one on-chain purchase on the live app.
+Target: 10+ real people who connect a Freighter wallet and complete at least one on-chain purchase on the live app. (Level 5 raises this to 50+ — see §2a.)
 
 ### Where to recruit
 
@@ -32,6 +32,27 @@ Target: 10+ real people who connect a Freighter wallet and complete at least one
 - [r/stellar](https://reddit.com/r/stellar)
 - X/Twitter, tagging the Stellar/Soroban dev community
 - Friends/colleagues willing to try a testnet dApp for a few minutes
+
+## 2a. Scaling to 50+ users (Level 5)
+
+Getting from 10 to 50 real testers needs more surface area than Discord + Reddit alone. Every message below should end with the Google Form link (see `docs/USER_ONBOARDING_FORM.md`) so responses land in one place.
+
+### Additional channels
+
+- **r/CryptoCurrency**, **r/dapps**, **r/ethdev** (cross-chain devs are often curious about Soroban) — post the same "looking for testers" framing, be upfront it's testnet/no real funds
+- **Stellar Discord's other servers**: Meridian community, SCF (Stellar Community Fund) Discord, Soroban builders channel
+- **Telegram**: Stellar Global, Stellar Developers groups
+- **Dev communities**: Indie Hackers "Show IH", Product Hunt (Ship page for pre-launch), dev.to article + demo link
+- **University/bootcamp Discord/Slack** if you're in one — students are usually happy to try a 2-minute testnet dApp
+- **Personal network**: a short personal ask converts far better than a cold post — text 10-15 people individually before mass-posting
+
+### Incentive (optional, meaningfully increases conversion)
+
+A small real reward (e.g. $2-5 in real XLM/USDC, or a raffle for the first 50) turns "sure, later" into "let me do it now." Not required, but worth considering if response rate from free asks is slow.
+
+### Batching outreach
+
+Post to 2-3 channels per day rather than all at once — spreads out support questions, and lets you fix any issue a channel surfaces before the next batch sees it.
 
 ### Ready-to-post messages
 
