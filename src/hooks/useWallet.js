@@ -11,6 +11,10 @@ import {
 import { NETWORK_PASSPHRASE } from '../lib/contract.js';
 import { trackEvent } from '../lib/monitoring.js';
 
+function isMobileBrowser() {
+  return typeof navigator !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+}
+
 function freighterError(result, fallback) {
   if (result?.error) {
     throw new Error(result.error.message || fallback);
@@ -79,6 +83,11 @@ export function useWallet() {
     try {
       const connection = await safeFreighterCheck(isConnected);
       if (!connection?.isConnected) {
+        if (isMobileBrowser()) {
+          throw new Error(
+            'Freighter is a desktop browser extension and has no mobile app yet — open this page on a desktop browser with Freighter installed to connect a wallet.'
+          );
+        }
         throw new Error(
           'Freighter wallet not found. Install it from https://freighter.app and refresh.'
         );

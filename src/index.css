@@ -534,6 +534,30 @@ h1, h2, h3, h4 {
   text-shadow: 0 0 20px rgba(0, 242, 255, 0.25);
 }
 
+/* --- Onboarding hint --- */
+.onboarding-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding: 0.85rem 1.1rem;
+  margin-bottom: 1.25rem;
+  border-radius: 0.85rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed var(--border-color);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.onboarding-step {
+  white-space: nowrap;
+}
+
+.onboarding-arrow {
+  color: var(--accent-color);
+  opacity: 0.6;
+}
+
 /* --- Funding --- */
 .funding-card {
   padding: 1.1rem 1.3rem;

@@ -308,6 +308,16 @@ export default function RestaurantPanel() {
         </div>
       </div>
 
+      {!connected && (
+        <div className="onboarding-hint" role="status">
+          <span className="onboarding-step">1. Connect Freighter (top-right)</span>
+          <span className="onboarding-arrow">→</span>
+          <span className="onboarding-step">2. One-click fund on Testnet</span>
+          <span className="onboarding-arrow">→</span>
+          <span className="onboarding-step">3. Buy any item, no real money</span>
+        </div>
+      )}
+
       {checkingAccount && connected && (
         <div className="alert alert-info">Checking testnet account…</div>
       )}

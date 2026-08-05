@@ -35,6 +35,8 @@ impl RestaurantContract {
             return Err(Error::AlreadyInitialized);
         }
 
+        owner.require_auth();
+
         env.storage().instance().set(&DataKey::Owner, &owner);
         env.storage().instance().set(&DataKey::Name, &name);
         env.storage().instance().set(&DataKey::Balance, &0i128);
