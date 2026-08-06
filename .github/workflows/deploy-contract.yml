@@ -14,30 +14,30 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-          target: wasm32-unknown-unknown
+          target: wasm32v1-none
           override: true
 
-      - name: Install Soroban CLI
-        run: cargo install --locked soroban-cli --version 22.0.0
+      - name: Install Stellar CLI
+        run: cargo install --locked stellar-cli
 
       - name: Generate deployer identity
         run: |
-          soroban keys generate deployer --network testnet --fund
-          echo "DEPLOYER=$(soroban keys address deployer)" >> $GITHUB_ENV
+          stellar keys generate deployer --network testnet --fund
+          echo "DEPLOYER=$(stellar keys address deployer)" >> $GITHUB_ENV
           sleep 15
-          curl -sf "https://horizon-testnet.stellar.org/accounts/$(soroban keys address deployer)" | head -c 200
+          curl -sf "https://horizon-testnet.stellar.org/accounts/$(stellar keys address deployer)" | head -c 200
 
       - name: Build contract
-        run: soroban contract build --manifest-path contracts/restaurant/Cargo.toml
+        run: stellar contract build --manifest-path contracts/restaurant/Cargo.toml
 
       - name: Deploy contract
         id: deploy
         run: |
-          WASM="target/wasm32-unknown-unknown/release/restaurant_contract.wasm"
+          WASM="target/wasm32v1-none/release/restaurant_contract.wasm"
           ls -la "$WASM"
           for attempt in 1 2 3; do
             echo "Deploy attempt $attempt..."
-            OUTPUT=$(soroban contract deploy \
+            OUTPUT=$(stellar contract deploy \
               --wasm "$WASM" \
               --source deployer \
               --network testnet 2>&1) || true
@@ -55,12 +55,12 @@ jobs:
       - name: Initialize contract
         id: init
         run: |
-          TX=$(soroban contract invoke \
+          TX=$(stellar contract invoke \
             --id "${{ steps.deploy.outputs.contract_id }}" \
             --source deployer \
             --network testnet \
             -- init \
-            --owner "$(soroban keys address deployer)" \
+            --owner "$(stellar keys address deployer)" \
             --name "Arc Nexus")
           echo "init_tx=$TX" >> $GITHUB_OUTPUT
 
