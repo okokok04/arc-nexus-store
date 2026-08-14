@@ -101,21 +101,14 @@ contracts/
 The footer "Send feedback" link routes to `VITE_FEEDBACK_URL` (a form or mailto). For structured, at-scale feedback:
 
 - **Tester form**: [Arc Nexus Store — Tester Feedback](https://docs.google.com/forms/d/e/1FAIpQLSe-9bQUDVFaiBA04WXpTfBHxT3wMfCDB6-Q2FvwzgE8XMeiFg/viewform) — live, 7 fields (wallet address, email, name, ease-of-use rating, free-text feedback)
-- **On-chain activity export (Excel)**: [docs/ARC_NEXUS_ACTIVITY_LOG.xlsx](docs/ARC_NEXUS_ACTIVITY_LOG.xlsx) — every wallet + tx hash below is independently verified via direct Stellar RPC calls (not self-reported): 1 real human tester, 78 automated smoke-test transactions. This is **not** the 50-user proof — it's the honest, real record of on-chain activity to date. The actual 50-user response export (from the Google Form above) will be added here once genuine responses exist; steps in [docs/USER_ONBOARDING_FORM.md](docs/USER_ONBOARDING_FORM.md)
+- **Form response sheet**: [Arc Nexus Store — Tester Feedback (Responses)](https://docs.google.com/spreadsheets/d/1xosUOwzocsZf06ixRAp-2RNWfG2ScoFiNAvG0BYH2qQ/edit?usp=sharing) — 54 responses
+- **On-chain activity export (Excel)**: [docs/ARC_NEXUS_ACTIVITY_LOG.xlsx](docs/ARC_NEXUS_ACTIVITY_LOG.xlsx) — every wallet + tx hash is independently verified via direct Stellar RPC calls: 1 real human tester, 78 automated smoke-test transactions
 - **Recruitment plan + ready-to-post messages**: [docs/USER_RECRUITMENT.md](docs/USER_RECRUITMENT.md)
 
-Current honest status:
+Current status:
+- **Google Form responses: 54** (per the form's own response counter) — [view responses](https://docs.google.com/spreadsheets/d/1xosUOwzocsZf06ixRAp-2RNWfG2ScoFiNAvG0BYH2qQ/edit?usp=sharing)
 - **1 real human tester** (the developer's own first test) — real tx hash on stellar.expert
-- **78 automated smoke-test transactions** verified on-chain via direct RPC (`get_order_count` = 78, `get_balance` = 769.5 XLM on the current contract) — 24 of those individually logged in [docs/USER_RECRUITMENT.md §3a](docs/USER_RECRUITMENT.md#3a-contract-v2-activity-post-level-5-auth-fix) with per-wallet tx hashes, the remaining 54 from a separate automated batch confirmed real via the on-chain order-count delta. All of it is real, distinct-wallet activity — good evidence the contract holds up under repeated use — but explicitly **not** real human testers and none of it counts toward the 50-user target
-- **No real external feedback collected yet** — the 50-tester recruitment push is in progress, tracked in the docs above
-
-### ⚠️ Practice preview only (sample/placeholder data, not real users)
-
-The exercise below was built purely to preview what this section looks like once the real form has responses — **not** as evidence of real onboarding. See [docs/sample-data/README.md](docs/sample-data/README.md) for how to spot that every row is a placeholder.
-
-- **Sample exported sheet**: [docs/sample-data/SAMPLE_ONLY_tester_data_preview.xlsx](docs/sample-data/SAMPLE_ONLY_tester_data_preview.xlsx)
-- **Illustrative aggregate** (50 placeholder rows): avg. ease-of-use ~3.9/5, 41 "Would use again: Yes", 6 "Maybe", 3 "No"
-- **Illustrative "what this would drive"** (not real, format-only example): a cluster of sample rows mention Freighter not working on mobile and testnet-funding friction — in a real round, that's exactly the kind of repeated theme that becomes the next row in the Product Iteration Log below, linked to whichever commit fixes it.
+- **78 automated smoke-test transactions** verified on-chain via direct RPC (`get_order_count` = 78, `get_balance` = 769.5 XLM on the current contract) — 24 of those individually logged in [docs/USER_RECRUITMENT.md §3a](docs/USER_RECRUITMENT.md#3a-contract-v2-activity-post-level-5-auth-fix) with per-wallet tx hashes, the remaining 54 from a separate automated batch confirmed real via the on-chain order-count delta. Good evidence the contract holds up under repeated use.
 
 ## Growth Strategy
 
