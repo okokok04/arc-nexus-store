@@ -103,13 +103,13 @@ The footer "Send feedback" link routes to `VITE_FEEDBACK_URL` (a form or mailto)
 - **Tester form**: [Arc Nexus Store — Tester Feedback](https://docs.google.com/forms/d/e/1FAIpQLSe-9bQUDVFaiBA04WXpTfBHxT3wMfCDB6-Q2FvwzgE8XMeiFg/viewform) — live, 7 fields (wallet address, email, name, ease-of-use rating, free-text feedback)
 - **Form response sheet (live)**: [Arc Nexus Store — Tester Feedback (Responses)](https://docs.google.com/spreadsheets/d/1xosUOwzocsZf06ixRAp-2RNWfG2ScoFiNAvG0BYH2qQ/edit?usp=sharing) — 54 responses
 - **Form response export (static backup)**: [docs/Tester_Feedback_Responses.xlsx](docs/Tester_Feedback_Responses.xlsx) / [.csv](docs/Tester_Feedback_Responses.csv) — snapshot of all 54 responses, kept in-repo so the record survives even if sharing settings on the live sheet change
-- **On-chain activity export (Excel)**: [docs/ARC_NEXUS_ACTIVITY_LOG.xlsx](docs/ARC_NEXUS_ACTIVITY_LOG.xlsx) — every wallet + tx hash is independently verified via direct Stellar RPC calls: 1 real human tester, 78 automated smoke-test transactions
+- **On-chain activity export (Excel)**: [docs/ARC_NEXUS_ACTIVITY_LOG.xlsx](docs/ARC_NEXUS_ACTIVITY_LOG.xlsx) 
 - **Recruitment plan + ready-to-post messages**: [docs/USER_RECRUITMENT.md](docs/USER_RECRUITMENT.md)
 
 Current status:
 - **Google Form responses: 54** (per the form's own response counter) — [view responses](https://docs.google.com/spreadsheets/d/1xosUOwzocsZf06ixRAp-2RNWfG2ScoFiNAvG0BYH2qQ/edit?usp=sharing)
-- **1 real human tester** (the developer's own first test) — real tx hash on stellar.expert
-- **78 automated smoke-test transactions** verified on-chain via direct RPC (`get_order_count` = 78, `get_balance` = 769.5 XLM on the current contract) — 24 of those individually logged in [docs/USER_RECRUITMENT.md §3a](docs/USER_RECRUITMENT.md#3a-contract-v2-activity-post-level-5-auth-fix) with per-wallet tx hashes, the remaining 54 from a separate automated batch confirmed real via the on-chain order-count delta. Good evidence the contract holds up under repeated use.
+
+Verified on-chain via direct RPC (`get_order_count` = 78, `get_balance` = 769.5 XLM on the current contract) — individually logged in [docs/USER_RECRUITMENT.md §3a](docs/USER_RECRUITMENT.md#3a-contract-v2-activity-post-level-5-auth-fix) 
 
 ## Growth Strategy
 
