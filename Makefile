@@ -6,10 +6,10 @@ test-contract:
 	cargo test --package restaurant-contract
 
 test-frontend:
-	cd frontend && npm test
+	npm test
 
 build:
-	cd frontend && npm run build
+	npm run build
 
 dev:
-	cd frontend && npm run dev
+	npm run dev

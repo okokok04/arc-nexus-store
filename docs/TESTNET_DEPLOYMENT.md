@@ -1,5 +1,7 @@
 # PHASE 3: Testnet Deployment & Integration Guide
 
+> **Note:** the actual, working deploy script in this repo is `scripts/deploy-contract.mjs` (run via `npm run contract:deploy`). It builds for `wasm32v1-none` and deploys/initializes in one step. The `deploy-testnet.sh` / `deploy-testnet.ps1` / `deploy.mjs` scripts referenced below were early drafts and have been removed - this guide is kept for the general deployment concepts, not as literal copy-paste instructions.
+
 ## 🎯 Objectives
 
 1. ✅ Build smart contract to WebAssembly
