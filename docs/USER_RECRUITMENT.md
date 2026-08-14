@@ -67,8 +67,8 @@ No signup, no real funds, ~2 minutes.
 🔗 Try it: https://arc-restaurant-git.vercel.app/
 📄 Code: https://github.com/okokok04/arc-nexus-store
 
-Looking for testnet testers — would love a purchase + one line of feedback
-(what confused you, what you'd change). Feedback link is in the footer.
+Looking for testnet testers — would love a purchase + 2 min of feedback:
+📝 https://docs.google.com/forms/d/e/1FAIpQLSe-9bQUDVFaiBA04WXpTfBHxT3wMfCDB6-Q2FvwzgE8XMeiFg/viewform
 
 Happy to return the favor and test your project too 🙏
 ```
@@ -88,9 +88,11 @@ The flow is: connect wallet → one-click testnet funding → buy an item →
 see the tx confirmed with a link to stellar.expert.
 
 If you have Freighter installed, I'd really appreciate you trying it and
-leaving quick feedback (link in the footer) — even "this button confused me"
-is genuinely useful at this stage. Happy to answer questions about the
-Soroban contract in the comments.
+leaving quick feedback here — even "this button confused me"
+is genuinely useful at this stage:
+https://docs.google.com/forms/d/e/1FAIpQLSe-9bQUDVFaiBA04WXpTfBHxT3wMfCDB6-Q2FvwzgE8XMeiFg/viewform
+
+Happy to answer questions about the Soroban contract in the comments.
 ```
 
 **X / Twitter**
@@ -99,7 +101,8 @@ Shipped a small Soroban dApp on Stellar testnet: Arc Nexus Store — connect
 Freighter, fund with one click, buy an item, watch the tx settle on-chain.
 
 Would love testers + 1-line feedback 🙏
-https://arc-restaurant-git.vercel.app/
+Try it: https://arc-restaurant-git.vercel.app/
+Feedback: https://docs.google.com/forms/d/e/1FAIpQLSe-9bQUDVFaiBA04WXpTfBHxT3wMfCDB6-Q2FvwzgE8XMeiFg/viewform
 
 #Stellar #Soroban #Web3dev
 ```
@@ -113,7 +116,7 @@ takes about 2 minutes. Would you mind trying it and telling me what you think?
 2. Install Freighter wallet (browser extension) if you don't have it
 3. Connect wallet → click "Fund Testnet Account" if prompted
 4. Buy any item on the menu
-5. One line of feedback via the "Send feedback" link at the bottom
+5. Fill out this 2-min form: https://docs.google.com/forms/d/e/1FAIpQLSe-9bQUDVFaiBA04WXpTfBHxT3wMfCDB6-Q2FvwzgE8XMeiFg/viewform
 
 Genuinely want to know what's confusing or annoying, not just "looks good".
 Thanks!
@@ -127,7 +130,7 @@ Visit the live app
   -> Auto-fund testnet account (Friendbot, one click)
   -> Init store (owner only) or Purchase an item
   -> Tx confirmation + link to stellar.expert
-  -> "Send feedback" link in the footer
+  -> Fill out the tester feedback form (see link above)
 ```
 
 ## 3. Tracking Sheet

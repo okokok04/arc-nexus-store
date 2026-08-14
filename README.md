@@ -100,8 +100,8 @@ contracts/
 
 The footer "Send feedback" link routes to `VITE_FEEDBACK_URL` (a form or mailto). For structured, at-scale feedback:
 
-- **Tester form**: _pending_ — build steps and exact fields in [docs/USER_ONBOARDING_FORM.md](docs/USER_ONBOARDING_FORM.md) (wallet address, email, name, ease-of-use rating, free-text feedback)
-- **Response sheet (Excel export)**: _pending_ — becomes the live source of truth for the 50-user proof once the form is live; export/share steps are in the same doc
+- **Tester form**: [Arc Nexus Store — Tester Feedback](https://docs.google.com/forms/d/e/1FAIpQLSe-9bQUDVFaiBA04WXpTfBHxT3wMfCDB6-Q2FvwzgE8XMeiFg/viewform) — live, 7 fields (wallet address, email, name, ease-of-use rating, free-text feedback)
+- **Response sheet (Excel export)**: _pending_ — becomes the live source of truth for the 50-user proof once real responses come in; export/share steps are in [docs/USER_ONBOARDING_FORM.md](docs/USER_ONBOARDING_FORM.md)
 - **Recruitment plan + ready-to-post messages**: [docs/USER_RECRUITMENT.md](docs/USER_RECRUITMENT.md)
 
 Current honest status:
