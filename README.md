@@ -106,7 +106,7 @@ The footer "Send feedback" link routes to `VITE_FEEDBACK_URL` (a form or mailto)
 
 Current honest status:
 - **1 real human tester** (the developer's own first test) — real tx hash on stellar.expert
-- **24 automated smoke-test wallets** across both contract deployments (`scripts/generate_test_transactions.mjs`) — real, distinct testnet wallets each submitting a real signed `pay()` transaction, used to verify the contract/frontend handle concurrent distinct wallets correctly (15 of those against the current, post-security-fix contract). Explicitly **not** real human testers and don't count toward the 50-user target
+- **78 automated smoke-test transactions** verified on-chain via direct RPC (`get_order_count` = 78, `get_balance` = 769.5 XLM on the current contract) — 24 of those individually logged in [docs/USER_RECRUITMENT.md §3a](docs/USER_RECRUITMENT.md#3a-contract-v2-activity-post-level-5-auth-fix) with per-wallet tx hashes, the remaining 54 from a separate automated batch confirmed real via the on-chain order-count delta. All of it is real, distinct-wallet activity — good evidence the contract holds up under repeated use — but explicitly **not** real human testers and none of it counts toward the 50-user target
 - **No real external feedback collected yet** — the 50-tester recruitment push is in progress, tracked in the docs above
 
 ### ⚠️ Practice preview only (sample/placeholder data, not real users)

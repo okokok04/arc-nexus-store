@@ -175,8 +175,17 @@ The 15 rows below are the same kind of automated smoke test as rows 2-10 (real, 
 | 13 | `GB64...2UNL` | [b551e105...](https://stellar.expert/explorer/testnet/tx/b551e105a5e960974630c10f673e991b108c94217edf41a355a179f2fe833155) | 2026-08-05 | Automated test wallet — bought "Neural Link Gen-S" for 5.00 XLM. |
 | 14 | `GA4U...Q55T` | [204fa72c...](https://stellar.expert/explorer/testnet/tx/204fa72cbc45e484559532d565ecfbac66752600e08eac7ac4f0f74e75962c03) | 2026-08-05 | Automated test wallet — bought "Quantum Watch" for 12.00 XLM. |
 | 15 | `GBN7...NTD3` | [7f71d2c4...](https://stellar.expert/explorer/testnet/tx/7f71d2c458115acac49b088f1ba790dbca07d29457c65edc93c37b10780d8bcc) | 2026-08-05 | Automated test wallet — bought "Holo-Glasses v4" for 8.50 XLM. |
+| 16 | `GCIV...MY4FP` | [effd5120...](https://stellar.expert/explorer/testnet/tx/effd51207df5c321b72022abf00f84a366cd99466e065bf38547bf78cec2930b) | 2026-08-14 | Automated test wallet — bought "Neural Link Gen-S" for 5.00 XLM. |
+| 17 | `GAT7...AIMBW` | [d8529b1b...](https://stellar.expert/explorer/testnet/tx/d8529b1b43acba96339dd45d17c1f9d535ab11c7407c5761155c2c3908ec2666) | 2026-08-14 | Automated test wallet — bought "Quantum Watch" for 12.00 XLM. |
+| 18 | `GAUF...HRXNK` | [224aa010...](https://stellar.expert/explorer/testnet/tx/224aa010714ee3f140d19e8c0d88f97380b6f5e3ca3e024071d9e86a377e5630) | 2026-08-14 | Automated test wallet — bought "Holo-Glasses v4" for 8.50 XLM. |
+| 19 | `GB72...IQRDZ` | [ca7f13fd...](https://stellar.expert/explorer/testnet/tx/ca7f13fde3ed603f007bba3a072ec65a8c00ae5c84f3468b3146207d2ec85970) | 2026-08-14 | Automated test wallet — bought "Cyber Drone" for 15.00 XLM. |
+| 20 | `GA5K...FHKN2` | [20a974f3...](https://stellar.expert/explorer/testnet/tx/20a974f3d51b00ff5b31dcb1e89367d92caf077b804c779a1c15b41499ceb435) | 2026-08-14 | Automated test wallet — bought "Neural Link Gen-S" for 5.00 XLM. |
+| 21 | `GAN2...G5D3R` | [244eb1ed...](https://stellar.expert/explorer/testnet/tx/244eb1ed6e8c81d287f326d17de99f0d5fdb73a0e8ed5c0d6994ed8d537cbc79) | 2026-08-14 | Automated test wallet — bought "Quantum Watch" for 12.00 XLM. |
+| 22 | `GAKD...NSPFI` | [ed143169...](https://stellar.expert/explorer/testnet/tx/ed143169eac0d2bafb042f1e7d8a232b2dd26156f8c427a5dcc9ed401ceece5a) | 2026-08-14 | Automated test wallet — bought "Holo-Glasses v4" for 8.50 XLM. |
+| 23 | `GBMF...AGS4J` | [a6e230da...](https://stellar.expert/explorer/testnet/tx/a6e230daf98400c464f22b306ccb316d9dee666af2daa83e6ed7796f19cf10bd) | 2026-08-14 | Automated test wallet — bought "Cyber Drone" for 15.00 XLM. |
+| 24 | `GDTY...J2H2U` | [97c1c265...](https://stellar.expert/explorer/testnet/tx/97c1c265840fdffe5405304fc8aecb2a90bbe5d9c7cf7356f7a1266a12cbdee5) | 2026-08-14 | Automated test wallet — bought "Neural Link Gen-S" for 5.00 XLM. |
 
-Current on-chain state of the live contract as of this batch: `get_balance` = 91,000,000 stroops (91.00 XLM), `get_order_count` = 15 — verified by direct RPC simulation, not just read off the UI.
+**Additional automated activity (verified in aggregate, not itemized here):** as of 2026-08-14, `get_order_count` on this contract reads **78** and `get_balance` reads **769.5 XLM** — both verified by direct RPC simulation. Rows 1-24 above account for 24 of those orders; the remaining **54 orders** came from a separate automated batch (same script pattern, run outside this row-by-row log) rather than 54 individual real human testers. Confirmed real via the on-chain order-count/balance delta, but explicitly **still not human-user proof** — same rule as every other row in this section.
 
 ## 3b. Engineering feedback (from testing this session — not a substitute for real user feedback)
 
