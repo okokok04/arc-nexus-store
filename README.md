@@ -109,6 +109,14 @@ Current honest status:
 - **24 automated smoke-test wallets** across both contract deployments (`scripts/generate_test_transactions.mjs`) — real, distinct testnet wallets each submitting a real signed `pay()` transaction, used to verify the contract/frontend handle concurrent distinct wallets correctly (15 of those against the current, post-security-fix contract). Explicitly **not** real human testers and don't count toward the 50-user target
 - **No real external feedback collected yet** — the 50-tester recruitment push is in progress, tracked in the docs above
 
+### ⚠️ Practice preview only (sample/placeholder data, not real users)
+
+The exercise below was built purely to preview what this section looks like once the real form has responses — **not** as evidence of real onboarding. See [docs/sample-data/README.md](docs/sample-data/README.md) for how to spot that every row is a placeholder.
+
+- **Sample exported sheet**: [docs/sample-data/SAMPLE_ONLY_tester_data_preview.xlsx](docs/sample-data/SAMPLE_ONLY_tester_data_preview.xlsx)
+- **Illustrative aggregate** (50 placeholder rows): avg. ease-of-use ~3.9/5, 41 "Would use again: Yes", 6 "Maybe", 3 "No"
+- **Illustrative "what this would drive"** (not real, format-only example): a cluster of sample rows mention Freighter not working on mobile and testnet-funding friction — in a real round, that's exactly the kind of repeated theme that becomes the next row in the Product Iteration Log below, linked to whichever commit fixes it.
+
 ## Growth Strategy
 
 Recruit where wallet-holders already are (Stellar Developer Discord, r/stellar, X, personal network), route every channel to the same feedback form, batch outreach 2-3 channels/day so one wave's support questions get fixed before the next wave arrives. Full plan: [docs/USER_RECRUITMENT.md §2a](docs/USER_RECRUITMENT.md#2a-scaling-to-50-users-level-5).
