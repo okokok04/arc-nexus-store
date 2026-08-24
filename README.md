@@ -7,6 +7,12 @@
 
 **Arc Nexus Store** is a Soroban-powered restaurant/store payment dApp on Stellar. Customers connect a Freighter wallet, the owner initializes the store on-chain, and every purchase calls the deployed smart contract directly — no backend, no custodian.
 
+## Docs
+
+Full architecture, contract API, integration, deployment, and growth docs live in
+[`docs-site/`](docs-site) (VitePress). Run locally with `npm run docs:install && npm run docs:dev`,
+or see [`docs-site/README.md`](docs-site/README.md) for deployment.
+
 ## Live Demo
 
 - **Frontend**: [arc-restaurant-git.vercel.app](https://arc-restaurant-git.vercel.app/)

@@ -1,4 +1,4 @@
-.PHONY: test test-contract test-frontend build dev
+.PHONY: test test-contract test-frontend build dev docs docs-build
 
 test: test-contract test-frontend
 
@@ -13,3 +13,9 @@ build:
 
 dev:
 	npm run dev
+
+docs:
+	npm run docs:dev
+
+docs-build:
+	npm run docs:build

@@ -1,0 +1,182 @@
+/* ---------------------------------------------------------------------
+   Arc Nexus Store docs theme — dark aurora/glass, matches the dApp's
+   own brand (src/index.css): cyan #00f2ff + violet #a855f7 on near-black.
+   --------------------------------------------------------------------- */
+
+:root {
+  --vp-font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
+  --vp-font-family-mono: 'JetBrains Mono', monospace;
+}
+
+/* Headings use the display font */
+.vp-doc h1, .vp-doc h2, .vp-doc h3, .vp-doc h4,
+.VPNavBarTitle .title, .VPHero .name, .VPHero .text {
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+:root {
+  --vp-c-bg: #06070d;
+  --vp-c-bg-alt: #0a0b13;
+  --vp-c-bg-elv: #10121c;
+  --vp-c-bg-soft: #12141f;
+
+  --vp-c-divider: #23273a;
+  --vp-c-gutter: #23273a;
+
+  --vp-c-text-1: #eef0f7;
+  --vp-c-text-2: #b3b9cf;
+  --vp-c-text-3: #8b93ac;
+
+  --vp-c-brand-1: #00e0ec;
+  --vp-c-brand-2: #00c2d4;
+  --vp-c-brand-3: #049aab;
+  --vp-c-brand-soft: rgba(0, 242, 255, 0.14);
+
+  --vp-button-brand-bg: linear-gradient(135deg, #00f2ff, #00c2d4);
+  --vp-button-brand-text: #031014;
+  --vp-button-brand-hover-bg: #33f5ff;
+  --vp-button-brand-border: transparent;
+
+  --vp-c-default-1: #23273a;
+  --vp-c-default-soft: rgba(139, 147, 172, 0.12);
+
+  --vp-code-block-bg: #0b0d16;
+  --vp-code-bg: rgba(0, 242, 255, 0.1);
+  --vp-code-color: #7fe9f0;
+
+  --vp-c-brand-color: #00f2ff;
+}
+
+.dark {
+  --vp-custom-block-tip-bg: rgba(0, 242, 255, 0.08);
+  --vp-custom-block-tip-border: rgba(0, 242, 255, 0.35);
+  --vp-custom-block-tip-text: #cdeff2;
+  --vp-custom-block-warning-bg: rgba(255, 179, 71, 0.08);
+  --vp-custom-block-danger-bg: rgba(255, 93, 108, 0.1);
+}
+
+/* Aurora background, same recipe as the live app */
+@keyframes aurora {
+  0%, 100% { background-position: 12% 8%, 88% 82%, 50% 100%; }
+  50% { background-position: 22% 18%, 78% 72%, 45% 90%; }
+}
+
+@keyframes grid-drift {
+  from { background-position: 0 0; }
+  to { background-position: 48px 48px; }
+}
+
+html {
+  background: var(--vp-c-bg);
+}
+
+body {
+  position: relative;
+  isolation: isolate;
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(0, 242, 255, 0.12), transparent 40%),
+    radial-gradient(circle at 88% 82%, rgba(168, 85, 247, 0.14), transparent 45%),
+    radial-gradient(circle at 50% 100%, rgba(0, 242, 255, 0.05), transparent 60%);
+  background-size: 180% 180%, 180% 180%, 180% 180%;
+  background-attachment: fixed;
+  animation: aurora 22s ease-in-out infinite;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black 0%, transparent 75%);
+  animation: grid-drift 40s linear infinite;
+}
+
+.VPNav, .VPSidebar, .VPContent {
+  background: transparent !important;
+}
+
+.VPNavBar {
+  backdrop-filter: blur(10px);
+  background: rgba(6, 7, 13, 0.72) !important;
+}
+
+.VPSidebar {
+  backdrop-filter: blur(10px);
+  background: rgba(10, 11, 19, 0.65) !important;
+}
+
+/* Glassy cards for tables / custom blocks / code groups */
+.vp-doc table {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid var(--vp-c-divider);
+}
+
+.vp-doc tr {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.vp-doc tr:nth-child(2n) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.vp-doc th {
+  background: rgba(0, 242, 255, 0.06);
+  color: var(--vp-c-text-1);
+}
+
+.vp-doc div[class*='language-'] {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 0.85rem;
+}
+
+.custom-block {
+  border-radius: 0.85rem;
+  backdrop-filter: blur(6px);
+}
+
+/* Inline status chips used across the docs pages, e.g. [ok], [todo] */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  vertical-align: 0.1em;
+}
+
+.chip-ok {
+  background: rgba(46, 230, 138, 0.12);
+  color: #7cf0b6;
+  border: 1px solid rgba(46, 230, 138, 0.4);
+}
+
+.chip-todo {
+  background: rgba(255, 179, 71, 0.12);
+  color: #ffcf8a;
+  border: 1px solid rgba(255, 179, 71, 0.4);
+}
+
+.chip-live {
+  background: rgba(0, 242, 255, 0.1);
+  color: #7fe9f0;
+  border: 1px solid rgba(0, 242, 255, 0.35);
+}
+
+/* Scrollbar to match the app */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--vp-c-divider);
+  border-radius: 999px;
+  border: 2px solid var(--vp-c-bg);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--vp-c-brand-1); }
