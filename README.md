@@ -9,9 +9,12 @@
 
 ## Docs
 
-Full architecture, contract API, integration, deployment, and growth docs live in
-[`docs-site/`](docs-site) (VitePress). Run locally with `npm run docs:install && npm run docs:dev`,
-or see [`docs-site/README.md`](docs-site/README.md) for deployment.
+**Live**: [arc-nexus-store.vercel.app](https://arc-nexus-store.vercel.app) — architecture, contract API,
+integration, deployment, and growth docs.
+
+Source lives in [`docs-site/`](docs-site) (VitePress). Run locally with
+`npm run docs:install && npm run docs:dev`, or see [`docs-site/README.md`](docs-site/README.md)
+for deployment.
 
 ## Live Demo
 
