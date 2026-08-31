@@ -42,35 +42,40 @@ function getContract() {
 function decodeTransactionError(xdrBase64) {
   if (!xdrBase64) return 'Transaction failed. Please try again.';
 
-  // Known XDR patterns — match common Soroban error result codes
-  // txINSUFFICIENT_BALANCE / txINSUFFICIENT_FEE
-  if (xdrBase64.includes('////') || xdrBase64.includes('AAAA')) {
-    // Try to extract a meaningful code from the bytes
-    try {
-      const bytes = atob(xdrBase64);
-      // Soroban TransactionResult error codes (4-byte int32 at offset 0-4):
-      //  -1 = txFAILED, -2 = txTOO_EARLY, -3 = txTOO_LATE,
-      //  -4 = txMISSING_OPERATION, -5 = txBAD_SEQ, -6 = txBAD_AUTH,
-      //  -7 = txINSUFFICIENT_BALANCE, -8 = txNO_ACCOUNT,
-      //  -9 = txINSUFFICIENT_FEE, -10 = txBAD_AUTH_EXTRA, -11 = txINTERNAL_ERROR
-      const view = new DataView(new Uint8Array([...bytes].map(c => c.charCodeAt(0))).buffer);
-      const code = view.getInt32(0);
+  try {
+    const bytes = Uint8Array.from(atob(xdrBase64), c => c.charCodeAt(0));
+    const view = new DataView(bytes.buffer);
+
+    // TransactionResultCode is typically the first int32
+    // But errorResult might be just the result code union
+    // Try reading at different offsets
+    for (const offset of [0, 4, 8]) {
+      if (offset + 4 > bytes.length) break;
+      const code = view.getInt32(offset);
+
       const codeMap = {
-        [-1]: 'Transaction failed — one or more operations did not succeed. The contract may already be initialized, or your balance is insufficient.',
-        [-5]: 'Bad sequence number — your wallet state may be stale. Disconnect and reconnect your wallet, then retry.',
-        [-6]: 'Authorization failed — the transaction signature was rejected. Make sure Freighter is on Testnet.',
-        [-7]: 'Insufficient balance — your testnet account does not have enough XLM. Click "Fund Testnet Account" first.',
-        [-8]: 'Account not found — your wallet address does not exist on Testnet. Fund it first via Friendbot.',
-        [-9]: 'Insufficient fee — the network fee was too low. Try again (fees are auto-calculated).',
-        [-11]: 'Internal error on the Stellar network. Please try again in a few seconds.',
+        [-1]: 'Transaction failed — the contract call did not succeed. The store may not be initialized (click "Init Restaurant" first), or your balance is insufficient for this purchase.',
+        [-2]: 'Transaction submitted too early. Please wait a moment and retry.',
+        [-3]: 'Transaction expired. Please retry — a fresh transaction will be built automatically.',
+        [-5]: 'Sequence number mismatch — your wallet state may be stale. Disconnect and reconnect Freighter, then retry.',
+        [-6]: 'Authorization failed — make sure Freighter is set to Testnet and you approved the signing prompt.',
+        [-7]: 'Insufficient XLM balance for this purchase. Click "Fund Testnet Account" to get more test XLM.',
+        [-8]: 'Account not found on Testnet. Fund your wallet first via Friendbot.',
+        [-9]: 'Network fee too low. Please retry — fees are recalculated automatically.',
+        [-11]: 'Internal network error. Please try again in a few seconds.',
+        [-12]: 'Transaction too large. Please retry with a simpler operation.',
       };
-      if (codeMap[code]) return codeMap[code];
-    } catch {
-      // Failed to decode — fall through to generic message
+
+      if (codeMap[code]) {
+        console.log(`[Soroban] Decoded error code ${code} at offset ${offset}`);
+        return codeMap[code];
+      }
     }
+  } catch (e) {
+    console.warn('[Soroban] Could not decode error XDR:', e.message);
   }
 
-  return 'Transaction rejected by the network. Check that Freighter is on Testnet, your account is funded, and the contract is initialized. Then retry.';
+  return 'Transaction failed — the store may not be initialized yet. Try clicking "Init Restaurant" first, then retry your purchase. If the problem persists, ensure Freighter is on Testnet and your account has enough XLM.';
 }
 
 /**
@@ -146,8 +151,11 @@ export async function invokeContract(functionName, args, publicKey, signTransact
   const contract = getContract();
   const scArgs = args.map(scValFromSpec);
 
+  // Use a higher base fee for Soroban — 100 stroops often isn't enough
+  const sorobanBaseFee = '1000000'; // 0.1 XLM — assembleTransaction adds resource fee on top
+
   const tx = new TransactionBuilder(account, {
-    fee: BASE_FEE,
+    fee: sorobanBaseFee,
     networkPassphrase: NETWORK_PASSPHRASE,
   })
     .addOperation(contract.call(functionName, ...scArgs))
@@ -156,8 +164,12 @@ export async function invokeContract(functionName, args, publicKey, signTransact
 
   onPhase?.('simulating');
   const sim = await server.simulateTransaction(tx);
+
   if (rpc.Api.isSimulationError(sim)) {
-    const { message } = formatStellarError(new Error(sim.error || 'Simulation failed'));
+    console.error('[Soroban] Simulation error:', sim.error);
+    // Extract the real error — don't let base64 handler mask it
+    const simError = sim.error || 'Simulation failed';
+    const { message } = formatStellarError(new Error(simError));
     throw new Error(message || `Simulation failed for ${functionName}`);
   }
 
@@ -167,21 +179,26 @@ export async function invokeContract(functionName, args, publicKey, signTransact
     preparedTx = rpc.assembleTransaction(tx, sim).build();
   } catch (err) {
     const msg = err?.message || String(err);
+    console.warn('[Soroban] assembleTransaction failed:', msg);
+
     if (msg.includes('Bad union switch') || msg.includes('XDR') || msg.includes('union')) {
-      console.warn('XDR Parsing warning in assembleTransaction - using manual assembly');
+      console.warn('[Soroban] Attempting manual assembly with auth entries');
       try {
         const manualTx = new TransactionBuilder(account, {
-          fee: String(Number(sim.minResourceFee || 10000) + 10000),
+          fee: String(Math.max(Number(sim.minResourceFee || 100000), 100000) + 100000),
           networkPassphrase: NETWORK_PASSPHRASE,
         })
           .addOperation(contract.call(functionName, ...scArgs))
           .setTimeout(30);
+
+        // Include Soroban transaction data (resource footprint, etc.)
         if (sim.transactionData) {
           manualTx.setSorobanData(sim.transactionData);
         }
+
         preparedTx = manualTx.build();
       } catch (manualErr) {
-        throw new Error(`Failed to prepare transaction (manual assembly fallback failed): ${manualErr.message}`);
+        throw new Error(`Failed to prepare transaction: ${manualErr.message}`);
       }
     } else {
       throw new Error(`Failed to prepare transaction: ${msg}`);
@@ -200,13 +217,32 @@ export async function invokeContract(functionName, args, publicKey, signTransact
 
   onPhase?.('submitting');
   const signedTx = TransactionBuilder.fromXDR(signedXdr, NETWORK_PASSPHRASE);
-  const result = await server.sendTransaction(signedTx);
+
+  let result;
+  try {
+    result = await server.sendTransaction(signedTx);
+  } catch (sendErr) {
+    console.error('[Soroban] sendTransaction threw:', sendErr);
+    throw new Error(`Network error submitting transaction: ${sendErr.message}. Please retry.`);
+  }
+
+  console.log('[Soroban] sendTransaction result:', result.status, result.hash || '');
 
   if (result.status === 'ERROR') {
-    // Don't expose raw XDR to users — decode into a friendly message
+    // Log full details for debugging
     const rawXdr = result.errorResult?.toXDR?.('base64') || '';
+    console.error('[Soroban] Transaction ERROR:', {
+      status: result.status,
+      errorXdr: rawXdr,
+      hash: result.hash,
+      latestLedger: result.latestLedger,
+    });
     const friendly = decodeTransactionError(rawXdr);
     throw new Error(friendly);
+  }
+
+  if (result.status === 'DUPLICATE') {
+    console.warn('[Soroban] Duplicate transaction — may have already been submitted');
   }
 
   onPhase?.('confirming');
