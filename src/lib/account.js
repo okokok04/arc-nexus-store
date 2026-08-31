@@ -90,6 +90,14 @@ export function formatStellarError(err) {
     };
   }
 
+  // Catch raw base64/XDR strings that slipped through — never show these to users
+  if (/^[A-Za-z0-9+/=]{16,}$/.test(msg.trim())) {
+    return {
+      message: 'Transaction rejected by the network. Check that Freighter is on Testnet, your account is funded, and the contract is initialized. Then retry.',
+      needsFunding: false,
+    };
+  }
+
   return { message: msg, needsFunding: false };
 }
 

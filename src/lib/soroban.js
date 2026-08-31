@@ -36,6 +36,44 @@ function getContract() {
 }
 
 /**
+ * Decode a Soroban transaction error XDR (base64) into a user-friendly message.
+ * The raw XDR (e.g. "AAAAACi1ST////9AAAAAA==") is unreadable to end users.
+ */
+function decodeTransactionError(xdrBase64) {
+  if (!xdrBase64) return 'Transaction failed. Please try again.';
+
+  // Known XDR patterns — match common Soroban error result codes
+  // txINSUFFICIENT_BALANCE / txINSUFFICIENT_FEE
+  if (xdrBase64.includes('////') || xdrBase64.includes('AAAA')) {
+    // Try to extract a meaningful code from the bytes
+    try {
+      const bytes = atob(xdrBase64);
+      // Soroban TransactionResult error codes (4-byte int32 at offset 0-4):
+      //  -1 = txFAILED, -2 = txTOO_EARLY, -3 = txTOO_LATE,
+      //  -4 = txMISSING_OPERATION, -5 = txBAD_SEQ, -6 = txBAD_AUTH,
+      //  -7 = txINSUFFICIENT_BALANCE, -8 = txNO_ACCOUNT,
+      //  -9 = txINSUFFICIENT_FEE, -10 = txBAD_AUTH_EXTRA, -11 = txINTERNAL_ERROR
+      const view = new DataView(new Uint8Array([...bytes].map(c => c.charCodeAt(0))).buffer);
+      const code = view.getInt32(0);
+      const codeMap = {
+        [-1]: 'Transaction failed — one or more operations did not succeed. The contract may already be initialized, or your balance is insufficient.',
+        [-5]: 'Bad sequence number — your wallet state may be stale. Disconnect and reconnect your wallet, then retry.',
+        [-6]: 'Authorization failed — the transaction signature was rejected. Make sure Freighter is on Testnet.',
+        [-7]: 'Insufficient balance — your testnet account does not have enough XLM. Click "Fund Testnet Account" first.',
+        [-8]: 'Account not found — your wallet address does not exist on Testnet. Fund it first via Friendbot.',
+        [-9]: 'Insufficient fee — the network fee was too low. Try again (fees are auto-calculated).',
+        [-11]: 'Internal error on the Stellar network. Please try again in a few seconds.',
+      };
+      if (codeMap[code]) return codeMap[code];
+    } catch {
+      // Failed to decode — fall through to generic message
+    }
+  }
+
+  return 'Transaction rejected by the network. Check that Freighter is on Testnet, your account is funded, and the contract is initialized. Then retry.';
+}
+
+/**
  * Simulate a read-only contract call (no wallet signature required).
  * Requires a funded `sourceKey` — the current Soroban RPC's simulation
  * response includes account-state fields that only decode cleanly for a
@@ -165,7 +203,10 @@ export async function invokeContract(functionName, args, publicKey, signTransact
   const result = await server.sendTransaction(signedTx);
 
   if (result.status === 'ERROR') {
-    throw new Error(result.errorResult?.toXDR('base64') || 'Transaction failed');
+    // Don't expose raw XDR to users — decode into a friendly message
+    const rawXdr = result.errorResult?.toXDR?.('base64') || '';
+    const friendly = decodeTransactionError(rawXdr);
+    throw new Error(friendly);
   }
 
   onPhase?.('confirming');
