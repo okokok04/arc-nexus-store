@@ -56,8 +56,44 @@ export function buildPayArgs(customer, tokenAddress, amount, orderId) {
 }
 
 export const MENU_ITEMS = [
-  { id: 1, name: 'Neural Link Gen-S', price: 5000000, emoji: '🧠', desc: 'Direct brain-to-web interface' },
-  { id: 2, name: 'Quantum Watch', price: 12000000, emoji: '⌚', desc: 'Syncs with stellar time protocol' },
-  { id: 3, name: 'Holo-Glasses v4', price: 8500000, emoji: '👓', desc: 'AR overlay for real-time finance' },
-  { id: 4, name: 'Cyber Drone', price: 15000000, emoji: '🛸', desc: 'Autonomous delivery unit' },
+  {
+    id: 1,
+    name: 'Neural Link Gen-S',
+    price: 5000000,
+    emoji: '🧠',
+    category: 'NeuroTech',
+    tag: 'Bestseller',
+    desc: 'Direct brain-to-web neural interface with ultra-low latency quantum encryption.',
+    specs: ['128-ch EEG', '0.4ms latency', 'Direct Soroban link'],
+  },
+  {
+    id: 2,
+    name: 'Quantum Watch',
+    price: 12000000,
+    emoji: '⌚',
+    category: 'Quantum',
+    tag: 'Popular',
+    desc: 'Synchronizes in real time with the Stellar consensus time protocol ledger clock.',
+    specs: ['Atomic sync', 'Sapphire glass', 'Testnet telemetry'],
+  },
+  {
+    id: 3,
+    name: 'Holo-Glasses v4',
+    price: 8500000,
+    emoji: '👓',
+    category: 'Optics',
+    tag: 'Trending',
+    desc: 'Spatial AR heads-up display overlay for real-time Soroban DeFi analytics.',
+    specs: ['4K micro-OLED', '120Hz refresh', 'Gesture control'],
+  },
+  {
+    id: 4,
+    name: 'Cyber Drone X1',
+    price: 15000000,
+    emoji: '🛸',
+    category: 'Robotics',
+    tag: 'Premium',
+    desc: 'Autonomous delivery unit powered by decentralized Stellar payment routing.',
+    specs: ['10km range', 'AI obstacle avoid', 'Instant dispatch'],
+  },
 ];

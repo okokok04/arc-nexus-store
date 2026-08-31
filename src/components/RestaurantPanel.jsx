@@ -22,9 +22,11 @@ import {
 import { trackEvent, captureException } from '../lib/monitoring.js';
 import PurchaseConfirmModal from './PurchaseConfirmModal.jsx';
 
+const CATEGORIES = ['All', 'NeuroTech', 'Quantum', 'Optics', 'Robotics'];
+
 export default function RestaurantPanel() {
   const { publicKey, connected, connecting, connect, signTransaction } = useWalletContext();
-  const [restaurantName, setRestaurantName] = useState('Arc Bistro');
+  const [restaurantName, setRestaurantName] = useState('Arc Nexus Bistro');
   const [balance, setBalance] = useState(null);
   const [orderCount, setOrderCount] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -40,13 +42,25 @@ export default function RestaurantPanel() {
   const [payPhase, setPayPhase] = useState('confirm');
   const [modalError, setModalError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [copiedContract, setCopiedContract] = useState(false);
   const purchaseStatusRef = useRef(null);
 
-  // Feedback: "It would be nice to have a search bar"
-  const filteredItems = MENU_ITEMS.filter(item =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.desc.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const copyContractId = () => {
+    navigator.clipboard.writeText(CONTRACT_ID);
+    setCopiedContract(true);
+    setTimeout(() => setCopiedContract(false), 2000);
+  };
+
+  const filteredItems = MENU_ITEMS.filter((item) => {
+    const matchesSearch =
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (item.category && item.category.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesCategory =
+      selectedCategory === 'All' || item.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   const scrollToPurchaseStatus = useCallback(() => {
     purchaseStatusRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -57,13 +71,10 @@ export default function RestaurantPanel() {
     try {
       const bal = await getContractBalance(publicKey);
       const count = await getOrderCount(publicKey);
-
-      // Only update if we get valid numbers back
       if (typeof bal === 'number') setBalance(bal);
       if (typeof count === 'number') setOrderCount(count);
     } catch (err) {
       console.warn('Refresh stats failed:', err.message);
-      // Keep existing stats, don't crash
     }
   }, [publicKey]);
 
@@ -115,16 +126,16 @@ export default function RestaurantPanel() {
     setMessage(null);
     try {
       const hash = await fundTestnetAccount(publicKey);
-      await new Promise((r) => setTimeout(r, 5000));
+      await new Promise((r) => setTimeout(r, 4000));
       const exists = await checkAccountExists(publicKey);
       if (!exists) {
-        throw new Error('Funding submitted but account not ready yet. Wait a few seconds and retry.');
+        throw new Error('Funding submitted but account not indexed yet. Wait ~5 seconds and retry.');
       }
       setNeedsFunding(false);
       setMessage(
         hash
-          ? `Account funded! Tx: ${hash.slice(0, 16)}… — you can now Init or Pay.`
-          : 'Account funded with test XLM. You can now Init or Pay.'
+          ? `Account funded with 10,000 test XLM! Tx: ${hash.slice(0, 16)}… — ready to buy!`
+          : 'Account funded with test XLM. You can now purchase hardware items!'
       );
     } catch (err) {
       const { message: msg } = formatStellarError(err);
@@ -137,7 +148,7 @@ export default function RestaurantPanel() {
 
   const handleInit = async () => {
     if (!connected || !publicKey) {
-      setError('Connect your Freighter wallet first');
+      setError('Connect your Freighter wallet first (button top-right)');
       return;
     }
     const funded = await checkFunding();
@@ -153,7 +164,7 @@ export default function RestaurantPanel() {
     try {
       const result = await initRestaurant(publicKey, restaurantName, publicKey, signTransaction);
       setLastTxHash(result.hash);
-      setMessage(`Restaurant initialized! Tx: ${result.hash.slice(0, 16)}…`);
+      setMessage(`Store initialized on-chain! Tx: ${result.hash.slice(0, 16)}…`);
       trackEvent('restaurant_init', { tx_hash: result.hash });
       await refreshStats();
       scrollToPurchaseStatus();
@@ -226,8 +237,13 @@ export default function RestaurantPanel() {
       setModalError(null);
       setPayPhase('confirm');
       setLastTxHash(result.hash);
-      setMessage(`Paid for ${item.name}! Tx: ${result.hash.slice(0, 16)}…`);
-      trackEvent('purchase', { item_id: item.id, item_name: item.name, value: item.price / 1_000_000, tx_hash: result.hash });
+      setMessage(`Successfully purchased ${item.name}! Tx: ${result.hash.slice(0, 16)}…`);
+      trackEvent('purchase', {
+        item_id: item.id,
+        item_name: item.name,
+        value: item.price / 1_000_000,
+        tx_hash: result.hash,
+      });
       await refreshStats();
     } catch (err) {
       console.error('Payment error:', err);
@@ -255,17 +271,14 @@ export default function RestaurantPanel() {
   const purchaseBlockReason = !isValidContractId(CONTRACT_ID)
     ? null
     : !connected
-      ? 'Connect Freighter wallet (top-right) to purchase.'
+      ? 'Connect Freighter wallet (top-right) to purchase hardware.'
       : checkingAccount
-        ? 'Checking testnet account…'
+        ? 'Verifying testnet account balance…'
         : needsFunding
-          ? 'Fund your testnet wallet before purchasing.'
+          ? 'Your wallet needs testnet funding before purchasing.'
           : loading && action?.startsWith('pay-')
-            ? 'Processing payment — confirm in Freighter if prompted.'
+            ? 'Processing transaction — please approve in Freighter popup.'
             : null;
-
-  const initDisabled = loading;
-  const payDisabled = loading;
 
   if (!isValidContractId(CONTRACT_ID)) {
     return (
@@ -282,195 +295,314 @@ export default function RestaurantPanel() {
 
   return (
     <section className="panel restaurant-panel">
-      <div className="panel-header">
-        <h2>Nexus Store Dashboard</h2>
-        <span className="badge-network">Stellar Testnet</span>
-      </div>
-      <p className="contract-id">
-        Logic ID: <code>{CONTRACT_ID}</code>
-      </p>
-
-      <div className="stats-grid">
-        <div className="stat-card">
-          <span className="stat-label">Store Revenue</span>
-          <span className="stat-value">
-            {typeof balance === 'number' ? `${(balance / 1_000_000).toFixed(2)} XLM` : '—'}
-          </span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-label">Units Sold</span>
-          <span className="stat-value">{typeof orderCount === 'number' ? orderCount : '—'}</span>
-        </div>
-      </div>
-
-      {!connected && (
-        <div className="onboarding-hint" role="status">
-          <span className="onboarding-step">1. Connect Freighter (top-right)</span>
-          <span className="onboarding-arrow">→</span>
-          <span className="onboarding-step">2. One-click fund on Testnet</span>
-          <span className="onboarding-arrow">→</span>
-          <span className="onboarding-step">3. Buy any item, no real money</span>
-        </div>
-      )}
-
-      {checkingAccount && connected && (
-        <div className="alert alert-info">Checking testnet account…</div>
-      )}
-
-      {needsFunding && connected && !checkingAccount && (
-        <div className="funding-card" role="status">
-          <h3>Fund Testnet Wallet</h3>
-          <p>
-            Freighter must be on <strong>Testnet</strong>. Your address{' '}
-            <code>{publicKey?.slice(0, 8)}…</code> needs test XLM before Init/Pay.
+      {/* Contract metadata banner */}
+      <div className="contract-hero-banner">
+        <div className="contract-hero-info">
+          <div className="contract-header-row">
+            <span className="hero-badge-live">● Soroban Active</span>
+            <span className="hero-badge-net">Stellar Testnet</span>
+          </div>
+          <h2 className="hero-title">Nexus Hardware Marketplace</h2>
+          <p className="hero-desc">
+            Direct peer-to-contract settlement via Rust Soroban smart contract. No middleman, instant finality.
           </p>
-          <div className="funding-actions">
+        </div>
+
+        <div className="contract-meta-box">
+          <span className="contract-meta-label">Contract Logic ID</span>
+          <div className="contract-id-row">
+            <code className="contract-id-text" title={CONTRACT_ID}>{CONTRACT_ID}</code>
             <button
               type="button"
-              className="btn btn-primary"
-              onClick={handleFund}
-              disabled={funding}
+              className="btn btn-secondary btn-xs copy-btn"
+              onClick={copyContractId}
+              title="Copy Contract ID"
             >
-              {funding ? (
-                <>
-                  <span className="spinner" /> Funding…
-                </>
-              ) : (
-                'Fund Testnet Account'
-              )}
+              {copiedContract ? 'Copied! ✓' : 'Copy'}
             </button>
             <a
-              href={friendbotUrl(publicKey)}
+              href={`https://stellar.expert/explorer/testnet/contract/${CONTRACT_ID}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-secondary btn-sm"
+              className="btn btn-ghost btn-xs"
+              title="View on Stellar Expert"
             >
-              Open Friendbot
+              ↗
             </a>
-            <a
-              href={laboratoryFundUrl(publicKey)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-ghost btn-sm"
-            >
-              Stellar Laboratory
-            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Interactive Onboarding Flow Steps */}
+      {!connected && (
+        <div className="onboarding-flow-card" role="status">
+          <div className="onboarding-flow-header">
+            <span className="onboarding-flow-title">🚀 Quick Start in 3 Steps</span>
+            <span className="onboarding-flow-badge">No real funds needed</span>
+          </div>
+          <div className="onboarding-steps-grid">
+            <div className="onboarding-step-box step-active">
+              <span className="step-num">01</span>
+              <div className="step-content">
+                <strong>Connect Wallet</strong>
+                <span>Install Freighter & switch to Testnet</span>
+              </div>
+            </div>
+            <div className="onboarding-step-box">
+              <span className="step-num">02</span>
+              <div className="step-content">
+                <strong>1-Click Fund</strong>
+                <span>Get 10,000 free test XLM instantly</span>
+              </div>
+            </div>
+            <div className="onboarding-step-box">
+              <span className="step-num">03</span>
+              <div className="step-content">
+                <strong>Instant Purchase</strong>
+                <span>Sign on-chain payment with Soroban</span>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
+      {/* Account Checking Alert */}
+      {checkingAccount && connected && (
+        <div className="alert alert-info">
+          <span className="spinner" /> Checking testnet account status…
+        </div>
+      )}
+
+      {/* Funding Card */}
+      {needsFunding && connected && !checkingAccount && (
+        <div className="funding-card" role="status">
+          <div className="funding-card-icon">⛽</div>
+          <div className="funding-card-body">
+            <h3>Testnet Account Funding Required</h3>
+            <p>
+              Your address <code>{publicKey?.slice(0, 8)}…{publicKey?.slice(-6)}</code> requires testnet XLM before making contract transactions.
+            </p>
+            <div className="funding-actions">
+              <button
+                type="button"
+                className="btn btn-primary btn-glow"
+                onClick={handleFund}
+                disabled={funding}
+              >
+                {funding ? (
+                  <>
+                    <span className="spinner" /> Funding from Friendbot…
+                  </>
+                ) : (
+                  '⚡ 1-Click Fund (10,000 test XLM)'
+                )}
+              </button>
+              <a
+                href={friendbotUrl(publicKey)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-secondary btn-sm"
+              >
+                Direct Friendbot ↗
+              </a>
+              <a
+                href={laboratoryFundUrl(publicKey)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-ghost btn-sm"
+              >
+                Stellar Laboratory ↗
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Catalog & Purchase Section */}
+      <div className="menu-section" id="purchase-section">
+        <div className="catalog-header-group">
+          <div>
+            <h3>Hardware Catalog</h3>
+            <p className="hint">
+              Smart contract invocation: <code>pay(customer, token, amount, order_id)</code>
+            </p>
+          </div>
+
+          {/* Search bar */}
+          <div className="menu-search">
+            <span className="menu-search-icon">🔍</span>
+            <input
+              type="text"
+              placeholder="Search hardware by name, category, or specs…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              aria-label="Search hardware catalog"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                className="menu-search-clear"
+                onClick={() => setSearchQuery('')}
+                aria-label="Clear search"
+              >
+                ×
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Category Filter Pills */}
+        <div className="category-pills-row">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              className={`category-pill ${selectedCategory === cat ? 'active' : ''}`}
+              onClick={() => setSelectedCategory(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* Purchase Status Notifications */}
+        <div ref={purchaseStatusRef} className="purchase-status">
+          {purchaseBlockReason && (
+            <div className="alert alert-info" role="status">
+              <span className="alert-icon">ℹ️</span> {purchaseBlockReason}
+            </div>
+          )}
+          {error && (
+            <div className="alert alert-error" role="alert">
+              <span className="alert-icon">⚠️</span> {error}
+            </div>
+          )}
+          {message && (
+            <div className="alert alert-success" role="status">
+              <span className="alert-icon">✅</span> {message}
+            </div>
+          )}
+          {lastTxHash && typeof lastTxHash === 'string' && (
+            <div className="tx-hash-badge">
+              <span>Verified On-Chain:</span>
+              <a
+                href={`https://stellar.expert/explorer/testnet/tx/${lastTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {lastTxHash.slice(0, 24)}… ↗
+              </a>
+            </div>
+          )}
+        </div>
+
+        {/* Product Cards Grid */}
+        {filteredItems.length === 0 ? (
+          <div className="menu-no-results">
+            <span className="no-results-icon">🔎</span>
+            <p>No hardware items match &quot;{searchQuery}&quot;</p>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedCategory('All');
+              }}
+            >
+              Reset Filters
+            </button>
+          </div>
+        ) : (
+          <div className="menu-grid">
+            {filteredItems.map((item, index) => {
+              const priceXLM = item.price / 1_000_000;
+              const priceUSD = (priceXLM * 0.12).toFixed(2);
+              return (
+                <article key={item.id} className="menu-card" style={{ '--i': index }}>
+                  {item.tag && <span className="card-top-tag">{item.tag}</span>}
+
+                  <div className="menu-card-header">
+                    <span className="menu-emoji">{item.emoji}</span>
+                    <span className="menu-category-tag">{item.category || 'Tech'}</span>
+                  </div>
+
+                  <h4>{item.name}</h4>
+                  <p className="menu-item-desc">{item.desc}</p>
+
+                  {item.specs && (
+                    <div className="specs-chips">
+                      {item.specs.map((spec) => (
+                        <span key={spec} className="spec-chip">
+                          {spec}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="menu-card-footer">
+                    <div className="price-group">
+                      <span className="menu-price">{priceXLM.toFixed(2)} XLM</span>
+                      <span className="menu-price-sub">≈ ${priceUSD} USD</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-purchase"
+                      onClick={() => handlePay(item)}
+                      disabled={loading}
+                      aria-busy={action === `pay-${item.id}`}
+                    >
+                      {action === `pay-${item.id}` ? (
+                        <>
+                          <span className="spinner" /> Signing…
+                        </>
+                      ) : (
+                        'Instant Pay ⚡'
+                      )}
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Store Initialization Section */}
       <div className="init-section">
-        <h3>Launch Nexus Store</h3>
-        <p className="hint">Authorize store instance on-chain: <code>init(owner, name)</code></p>
+        <div className="init-section-header">
+          <div>
+            <h3>Owner Protocol Controls</h3>
+            <p className="hint">
+              Initialize store instance on-chain: <code>init(owner, name)</code>
+            </p>
+          </div>
+          <span className="badge-initialized">Instance Protected</span>
+        </div>
+
         <div className="form-row">
           <input
             type="text"
             value={restaurantName}
             onChange={(e) => setRestaurantName(e.target.value)}
-            placeholder="Restaurant name"
+            placeholder="Store instance name"
             disabled={loading}
           />
           <button
             type="button"
             className="btn btn-secondary"
             onClick={handleInit}
-            disabled={initDisabled}
+            disabled={loading}
           >
             {action === 'init' ? (
               <>
                 <span className="spinner" /> Initializing…
               </>
             ) : (
-              'Init Restaurant'
+              'Init Store Instance'
             )}
           </button>
         </div>
-      </div>
-
-      <div className="menu-section" id="purchase-section">
-        <h3>Hardware Catalog — Pay via Soroban</h3>
-        <p className="hint">Transaction protocol: <code>pay(customer, token, amount, order_id)</code></p>
-
-        {/* Search bar — addresses user feedback: "It would be nice to have a search bar" */}
-        <div className="menu-search">
-          <span className="menu-search-icon">🔍</span>
-          <input
-            type="text"
-            placeholder="Search catalog…"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            aria-label="Search menu items"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              className="menu-search-clear"
-              onClick={() => setSearchQuery('')}
-              aria-label="Clear search"
-            >
-              ×
-            </button>
-          )}
-        </div>
-
-        <div ref={purchaseStatusRef} className="purchase-status">
-          {purchaseBlockReason && (
-            <div className="alert alert-info" role="status">
-              {purchaseBlockReason}
-            </div>
-          )}
-          {error && (
-            <div className="alert alert-error" role="alert">
-              {error}
-            </div>
-          )}
-          {message && (
-            <div className="alert alert-success" role="status">
-              {message}
-            </div>
-          )}
-          {lastTxHash && typeof lastTxHash === 'string' && (
-            <p className="tx-hash">
-              Last tx:{' '}
-              <a
-                href={`https://stellar.expert/explorer/testnet/tx/${lastTxHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {lastTxHash.slice(0, 20)}…
-              </a>
-            </p>
-          )}
-        </div>
-
-        {filteredItems.length === 0 ? (
-          <p className="menu-no-results">No items match &quot;{searchQuery}&quot;</p>
-        ) : (
-          <div className="menu-grid">
-            {filteredItems.map((item, index) => (
-              <article key={item.id} className="menu-card" style={{ '--i': index }}>
-                <span className="menu-emoji">{item.emoji}</span>
-                <h4>{item.name}</h4>
-                <p className="menu-price">{(item.price / 1_000_000).toFixed(2)} XLM</p>
-                <button
-                  type="button"
-                  className="btn btn-primary btn-block"
-                  onClick={() => handlePay(item)}
-                  disabled={payDisabled}
-                  aria-busy={action === `pay-${item.id}`}
-                >
-                  {action === `pay-${item.id}` ? (
-                    <>
-                      <span className="spinner" /> Transacting…
-                    </>
-                  ) : (
-                    'Purchase'
-                  )}
-                </button>
-              </article>
-            ))}
-          </div>
-        )}
       </div>
 
       <PurchaseConfirmModal

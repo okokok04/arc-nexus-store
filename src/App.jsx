@@ -50,7 +50,6 @@ export default function App() {
             </ErrorBoundary>
           </main>
           <footer className="footer">
-            <WalletConnect />
             <FeedbackLink />
           </footer>
         </div>
