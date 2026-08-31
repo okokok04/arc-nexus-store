@@ -4,6 +4,7 @@ import WalletConnect from './components/WalletConnect.jsx';
 import RestaurantPanel from './components/RestaurantPanel.jsx';
 import EventStream from './components/EventStream.jsx';
 import FeedbackLink from './components/FeedbackLink.jsx';
+import UserStats from './components/UserStats.jsx';
 import { captureException } from './lib/monitoring.js';
 
 class ErrorBoundary extends Component {
@@ -38,6 +39,9 @@ export default function App() {
         <div className="app">
           <WalletConnect />
           <main className="main-content">
+            <ErrorBoundary>
+              <UserStats />
+            </ErrorBoundary>
             <ErrorBoundary>
               <RestaurantPanel />
             </ErrorBoundary>

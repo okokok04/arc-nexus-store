@@ -1,4 +1,5 @@
 import { createPortal } from 'react-dom';
+import TransactionStepper from './TransactionStepper.jsx';
 
 const PHASE_LABELS = {
   confirm: null,
@@ -52,6 +53,9 @@ export default function PurchaseConfirmModal({
             Step 1: Confirm here. Step 2: Approve in Freighter wallet popup.
           </p>
         )}
+
+        {/* Transaction progress stepper — addresses "progress bar" feedback */}
+        {confirming && <TransactionStepper phase={phase} />}
 
         {confirming && phaseLabel && (
           <div className="alert alert-info modal-phase" role="status">

@@ -40,7 +40,14 @@ export default function RestaurantPanel() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [payPhase, setPayPhase] = useState('confirm');
   const [modalError, setModalError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const purchaseStatusRef = useRef(null);
+
+  // Feedback: "It would be nice to have a search bar"
+  const filteredItems = MENU_ITEMS.filter(item =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.desc.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const scrollToPurchaseStatus = useCallback(() => {
     purchaseStatusRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -396,6 +403,28 @@ export default function RestaurantPanel() {
         <h3>Hardware Catalog — Pay via Soroban</h3>
         <p className="hint">Transaction protocol: <code>pay(customer, token, amount, order_id)</code></p>
 
+        {/* Search bar — addresses user feedback: "It would be nice to have a search bar" */}
+        <div className="menu-search">
+          <span className="menu-search-icon">🔍</span>
+          <input
+            type="text"
+            placeholder="Search catalog…"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label="Search menu items"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              className="menu-search-clear"
+              onClick={() => setSearchQuery('')}
+              aria-label="Clear search"
+            >
+              ×
+            </button>
+          )}
+        </div>
+
         <div ref={purchaseStatusRef} className="purchase-status">
           {purchaseBlockReason && (
             <div className="alert alert-info" role="status">
@@ -426,30 +455,34 @@ export default function RestaurantPanel() {
           )}
         </div>
 
-        <div className="menu-grid">
-          {MENU_ITEMS.map((item, index) => (
-            <article key={item.id} className="menu-card" style={{ '--i': index }}>
-              <span className="menu-emoji">{item.emoji}</span>
-              <h4>{item.name}</h4>
-              <p className="menu-price">{(item.price / 1_000_000).toFixed(2)} XLM</p>
-              <button
-                type="button"
-                className="btn btn-primary btn-block"
-                onClick={() => handlePay(item)}
-                disabled={payDisabled}
-                aria-busy={action === `pay-${item.id}`}
-              >
-                {action === `pay-${item.id}` ? (
-                  <>
-                    <span className="spinner" /> Transacting…
-                  </>
-                ) : (
-                  'Purchase'
-                )}
-              </button>
-            </article>
-          ))}
-        </div>
+        {filteredItems.length === 0 ? (
+          <p className="menu-no-results">No items match &quot;{searchQuery}&quot;</p>
+        ) : (
+          <div className="menu-grid">
+            {filteredItems.map((item, index) => (
+              <article key={item.id} className="menu-card" style={{ '--i': index }}>
+                <span className="menu-emoji">{item.emoji}</span>
+                <h4>{item.name}</h4>
+                <p className="menu-price">{(item.price / 1_000_000).toFixed(2)} XLM</p>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-block"
+                  onClick={() => handlePay(item)}
+                  disabled={payDisabled}
+                  aria-busy={action === `pay-${item.id}`}
+                >
+                  {action === `pay-${item.id}` ? (
+                    <>
+                      <span className="spinner" /> Transacting…
+                    </>
+                  ) : (
+                    'Purchase'
+                  )}
+                </button>
+              </article>
+            ))}
+          </div>
+        )}
       </div>
 
       <PurchaseConfirmModal
