@@ -240,6 +240,7 @@ Based on analysis of the 54 tester feedback responses, the following recurring t
 | — | Sentry event (mobile) | — | — | Mobile Safari visitor hitting generic "wallet not found" error | Mobile browsers now get an honest, actionable message instead of a technical error | [`b2df24d`](https://github.com/okokok04/arc-nexus-store/commit/b2df24d) |
 | — | Engineering audit | — | — | No onboarding hint visible before connecting wallet | Added a 3-step onboarding hint (connect → fund → buy) visible before connecting | [`b2df24d`](https://github.com/okokok04/arc-nexus-store/commit/b2df24d) |
 | — | Engineering audit | — | — | `simulateContractCall` used unfunded placeholder — "Bad union switch" errors | Root-caused to SDK 3 major versions behind (13.3.0 → 16.2.0); upgraded and verified | [`45a80b5`](https://github.com/okokok04/arc-nexus-store/commit/45a80b5) |
+| U030 | Nguyễn Tâm | tamnguyen.dev@gmail.com | `GBRZX2V7...NJYF` | "Error messages could be more descriptive" (Rating: 4/5) | Decoded raw XDR/base64 transaction errors into user-friendly messages with actionable guidance | [`1cfa17b`](https://github.com/okokok04/arc-nexus-store/commit/1cfa17b) |
 
 ---
 
