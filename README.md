@@ -20,8 +20,8 @@ for deployment.
 
 - **Frontend**: [arc-restaurant-git.vercel.app](https://arc-restaurant-git.vercel.app/)
 - **Contract (Testnet)**: `CDRGTQ466OLVQDYDTZKXY4J5AWJOJSIJSN3U2CSWHYXD4L7JYU5VXY6N`
-- **Demo video**: _pending_ — script ready at [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md)
-- **Pitch deck**: [Arc Nexus Store — Pitch Deck (HTML)](docs/pitch-deck.html) — Problem, Solution, Architecture, Market, Traction, Growth, Roadmap
+- **Demo video**: [Arc Nexus Store — Demo Video Walkthrough](https://drive.google.com/file/d/1ur40UWbx4CYuyszYRlB4ulpWItcxP7Kx/view?usp=sharing) — showcases end-to-end user flow, Freighter wallet connection, testnet funding, on-chain purchase, and real-time Soroban events.
+- **Pitch deck**: [Arc Nexus Store — Pitch Deck (HTML)](docs/pitch-deck.html) — Problem, Solution, Architecture, Market Opportunity, Growth Strategy, and Future Roadmap.
 
 ## Screenshots
 
@@ -241,6 +241,8 @@ Based on analysis of the 54 tester feedback responses, the following recurring t
 | — | Engineering audit | — | — | No onboarding hint visible before connecting wallet | Added a 3-step onboarding hint (connect → fund → buy) visible before connecting | [`b2df24d`](https://github.com/okokok04/arc-nexus-store/commit/b2df24d) |
 | — | Engineering audit | — | — | `simulateContractCall` used unfunded placeholder — "Bad union switch" errors | Root-caused to SDK 3 major versions behind (13.3.0 → 16.2.0); upgraded and verified | [`45a80b5`](https://github.com/okokok04/arc-nexus-store/commit/45a80b5) |
 | U030 | Nguyễn Tâm | tamnguyen.dev@gmail.com | `GBRZX2V7...NJYF` | "Error messages could be more descriptive" (Rating: 4/5) | Decoded raw XDR/base64 transaction errors into user-friendly messages with actionable guidance | [`1cfa17b`](https://github.com/okokok04/arc-nexus-store/commit/1cfa17b) |
+| U018 | Kim Anh | kimanh.media@gmail.com | `GCXZNKPD...4BF` | "It took a few seconds too long to submit" / Signing timeout | Increased transaction timeout from 30s to 300s (5 min) to prevent `txTOO_LATE` expired errors during wallet review | [`7303132`](https://github.com/okokok04/arc-nexus-store/commit/7303132) |
+| — | Production testing | — | — | Network fee underestimation caused submission failures on heavy ledgers | Increased Soroban invocation base fee to 0.1 XLM (1,000,000 stroops) for reliable inclusion | [`7e172cf`](https://github.com/okokok04/arc-nexus-store/commit/7e172cf) |
 
 ---
 
