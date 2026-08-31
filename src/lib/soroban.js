@@ -99,7 +99,7 @@ export async function simulateContractCall(functionName, args = [], sourceKey) {
     networkPassphrase: NETWORK_PASSPHRASE,
   })
     .addOperation(contract.call(functionName, ...scArgs))
-    .setTimeout(30)
+    .setTimeout(300)
     .build();
 
   const sim = await server.simulateTransaction(tx);
@@ -122,7 +122,7 @@ export async function simulateWriteCall(functionName, args, publicKey) {
     networkPassphrase: NETWORK_PASSPHRASE,
   })
     .addOperation(contract.call(functionName, ...scArgs))
-    .setTimeout(30)
+    .setTimeout(300)
     .build();
 
   const sim = await server.simulateTransaction(tx);
@@ -159,7 +159,7 @@ export async function invokeContract(functionName, args, publicKey, signTransact
     networkPassphrase: NETWORK_PASSPHRASE,
   })
     .addOperation(contract.call(functionName, ...scArgs))
-    .setTimeout(30)
+    .setTimeout(300)
     .build();
 
   onPhase?.('simulating');
@@ -189,7 +189,7 @@ export async function invokeContract(functionName, args, publicKey, signTransact
           networkPassphrase: NETWORK_PASSPHRASE,
         })
           .addOperation(contract.call(functionName, ...scArgs))
-          .setTimeout(30);
+          .setTimeout(300);
 
         // Include Soroban transaction data (resource footprint, etc.)
         if (sim.transactionData) {

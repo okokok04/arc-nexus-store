@@ -5,7 +5,6 @@ import {
   payOrder,
   getContractBalance,
   getOrderCount,
-  simulateWriteCall,
 } from '../lib/soroban.js';
 import {
   checkAccountExists,
@@ -209,17 +208,6 @@ export default function RestaurantPanel() {
         setNeedsFunding(true);
         throw new Error('Fund your testnet account first, wait ~5 seconds, then retry.');
       }
-
-      await simulateWriteCall(
-        'pay',
-        [
-          { address: publicKey },
-          { address: DEFAULT_TOKEN },
-          { i128: item.price.toString() },
-          { u64: item.id.toString() },
-        ],
-        publicKey
-      );
 
       const result = await payOrder(
         publicKey,
