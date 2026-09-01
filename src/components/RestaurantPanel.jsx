@@ -3,8 +3,6 @@ import { useWalletContext } from '../context/WalletContext.jsx';
 import {
   initRestaurant,
   payOrder,
-  getContractBalance,
-  getOrderCount,
 } from '../lib/soroban.js';
 import {
   checkAccountExists,
@@ -27,8 +25,6 @@ const CATEGORIES = ['All', 'NeuroTech', 'Quantum', 'Optics', 'Robotics'];
 export default function RestaurantPanel() {
   const { publicKey, connected, connecting, connect, signTransaction } = useWalletContext();
   const [restaurantName, setRestaurantName] = useState('Arc Nexus Bistro');
-  const [balance, setBalance] = useState(null);
-  const [orderCount, setOrderCount] = useState(null);
   const [loading, setLoading] = useState(false);
   const [funding, setFunding] = useState(false);
   const [checkingAccount, setCheckingAccount] = useState(false);
@@ -66,18 +62,6 @@ export default function RestaurantPanel() {
     purchaseStatusRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, []);
 
-  const refreshStats = useCallback(async () => {
-    if (!publicKey) return;
-    try {
-      const bal = await getContractBalance(publicKey);
-      const count = await getOrderCount(publicKey);
-      if (typeof bal === 'number') setBalance(bal);
-      if (typeof count === 'number') setOrderCount(count);
-    } catch (err) {
-      console.warn('Refresh stats failed:', err.message);
-    }
-  }, [publicKey]);
-
   const checkFunding = useCallback(async () => {
     if (!publicKey) {
       setNeedsFunding(false);
@@ -103,12 +87,6 @@ export default function RestaurantPanel() {
       document.body.style.overflow = '';
     };
   }, [confirmOpen]);
-
-  useEffect(() => {
-    refreshStats();
-    const id = setInterval(refreshStats, 10000);
-    return () => clearInterval(id);
-  }, [refreshStats]);
 
   useEffect(() => {
     if (connected && publicKey) {
@@ -166,7 +144,6 @@ export default function RestaurantPanel() {
       setLastTxHash(result.hash);
       setMessage(`Store initialized on-chain! Tx: ${result.hash.slice(0, 16)}…`);
       trackEvent('restaurant_init', { tx_hash: result.hash });
-      await refreshStats();
       scrollToPurchaseStatus();
     } catch (err) {
       const { message: msg, needsFunding: nf } = formatStellarError(err);
@@ -244,7 +221,6 @@ export default function RestaurantPanel() {
         value: item.price / 1_000_000,
         tx_hash: result.hash,
       });
-      await refreshStats();
     } catch (err) {
       console.error('Payment error:', err);
       const { message: msg, needsFunding: nf } = formatStellarError(err);

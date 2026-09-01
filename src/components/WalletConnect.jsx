@@ -71,6 +71,7 @@ export default function WalletConnect() {
             className="btn btn-primary btn-glow"
             onClick={connect}
             disabled={connecting}
+            aria-label="Connect Wallet"
           >
             {connecting ? (
               <>
@@ -78,7 +79,7 @@ export default function WalletConnect() {
               </>
             ) : (
               <>
-                <span className="btn-icon">🔗</span> Connect Freighter
+                <span className="btn-icon">🔗</span> Connect Wallet
               </>
             )}
           </button>
